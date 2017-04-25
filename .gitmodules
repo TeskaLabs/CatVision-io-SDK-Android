@@ -1,0 +1,9 @@
+[submodule "external/jpeg/jni"]
+	path = external/jpeg/jni
+	url = https://android.googlesource.com/platform/external/jpeg
+[submodule "external/libpng/jni"]
+	path = external/libpng/jni
+	url = https://android.googlesource.com/platform/external/libpng
+[submodule "external/libvncserver/jni"]
+	path = external/libvncserver/jni
+	url = https://android.googlesource.com/platform/external/libvncserver
