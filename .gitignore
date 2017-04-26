@@ -40,12 +40,18 @@ captures/
 # Keystore files
 *.jks
 
-external/libpng/obj
+# Module external
 external/jpeg/obj
+external/libpng/obj
 external/libvncserver/obj
+external/lib
 
-tlra/src/main/obj
-tlra/src/main/libs
+external/include
+
+
+# Module cvio
+cvio/src/main/obj
+cvio/src/main/libs
 
 seacat/SeaCatClient_Android_*.aar
 
