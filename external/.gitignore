@@ -1,0 +1,8 @@
+# binaries
+/jpeg/obj
+/libpng/obj
+/libvncserver/obj
+/lib
+
+# headers for jni
+/include
