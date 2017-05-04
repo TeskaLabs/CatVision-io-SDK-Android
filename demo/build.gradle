@@ -7,8 +7,8 @@ android {
         applicationId "com.teskalabs.cvio"
         minSdkVersion 21
         targetSdkVersion 25
-        versionCode 16110301
-        versionName 'v1611-rc.1'
+        versionCode 17050301
+        versionName 'v1705-rc.1'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

@@ -8,7 +8,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 25
         versionCode 17050301
-        versionName 'v1711-rc.1'
+        versionName 'v1705-rc.1'
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
