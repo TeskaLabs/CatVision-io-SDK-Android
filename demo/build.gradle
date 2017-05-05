@@ -4,7 +4,7 @@ android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
     defaultConfig {
-        applicationId "com.teskalabs.cvio"
+        applicationId "com.teskalabs.cvio.demo"
         minSdkVersion 21
         targetSdkVersion 25
         versionCode 17050301
