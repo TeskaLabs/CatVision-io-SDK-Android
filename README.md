@@ -57,8 +57,7 @@ $ ./build.sh
 The CatVision.io module depends on **SeaCat Client**. SeaCat takes care for identifying your device and making it able to connect securely.
 
 ```
-$ cd seacat
-$ wget https://s3.amazonaws.com/resources.seacat.mobi/releases/SeaCatClient_Android_v1611-rc-1-release.aar
+$ cp SeaCatClient_Android_v1611-rc-1-release.aar ./seacat 
 ```
 
 ### Build the cvio module's JNI
