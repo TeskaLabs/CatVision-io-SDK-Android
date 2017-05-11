@@ -38,6 +38,8 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 	private static final String TAG = CatVision.class.getName();
 
 	public static final String DEFAULT_CLIENT_HANDLE = "-DefaultClientHandle-";
+	private static final String PREFS_CLIENT_HANDLE_KEY = "clientHandle";
+	private static final String PREFS_NAME = "cvio.prefs";
 
 	protected static CVIOSeaCatPlugin cvioSeaCatPlugin = null;
 	private static final int port = 5900;
@@ -160,9 +162,9 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 
 	public void resetClientHandle()
 	{
-		SharedPreferences sharedPref = getSharedPreferences("cvio.prefs", Context.MODE_PRIVATE);
+		SharedPreferences sharedPref = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = sharedPref.edit();
-		editor.remove("clientHandle");
+		editor.remove(PREFS_CLIENT_HANDLE_KEY);
 		editor.commit();
 
 		clientHandle = null;
@@ -178,14 +180,14 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 	{
 		this.clientHandle = clientHandle;
 
-		SharedPreferences sharedPref = getSharedPreferences("cvio.prefs", Context.MODE_PRIVATE);
-		if (sharedPref.contains("clientHandle"))
+		SharedPreferences sharedPref = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+		if (sharedPref.contains(PREFS_CLIENT_HANDLE_KEY))
 		{
-			if (!sharedPref.getString("clientHandle", "").equals(clientHandle))
+			if (!sharedPref.getString(PREFS_CLIENT_HANDLE_KEY, "").equals(clientHandle))
 			{
 				// Reset identity is required, CSR will be submitted asynchronously
 				SharedPreferences.Editor editor = sharedPref.edit();
-				editor.putString("clientHandle", clientHandle);
+				editor.putString(PREFS_CLIENT_HANDLE_KEY, clientHandle);
 				editor.commit();
 
 				try {
@@ -214,7 +216,7 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 		else {
 			// Fresh onboarding, client handle is new and CSR is to be submitted
 			SharedPreferences.Editor editor = sharedPref.edit();
-			editor.putString("clientHandle", clientHandle);
+			editor.putString(PREFS_CLIENT_HANDLE_KEY, clientHandle);
 			editor.commit();
 
 			submitCSR();
