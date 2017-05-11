@@ -1,7 +1,5 @@
 <resources>
     <string name="app_name">CatVision.io</string>
     <string name="app_label">CatVision Remote Access</string>
-    <string name="status_unknown">\??????</string>
-    <string name="action_reset_identity">Reset Identity</string>
     <string name="title_activity_test_area">Test Area</string>
 </resources>

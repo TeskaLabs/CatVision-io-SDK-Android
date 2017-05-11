@@ -12,33 +12,14 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.teskalabs.cvio.demo.MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="@string/status_unknown"
-        android:id="@+id/statusTextView"
-        android:layout_alignParentTop="false"
-        android:layout_alignParentLeft="false"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true" />
-
-    <TextView
-        android:text="[????????????????]"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:id="@+id/clientTagTextView"/>
-
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:srcCompat="@drawable/rainbow"
         android:id="@+id/imageView3"
         android:paddingBottom="80dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"/>
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/imageView" />
 
     <ImageView
         android:layout_width="match_parent"
@@ -54,9 +35,9 @@
         android:text="Go to test area"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
         android:id="@+id/test_area_btn"
-        android:onClick="onClickDemoArea"/>
+        android:onClick="onClickDemoArea"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

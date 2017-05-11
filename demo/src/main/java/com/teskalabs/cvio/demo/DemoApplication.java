@@ -1,9 +1,7 @@
 package com.teskalabs.cvio.demo;
 
 import android.app.Application;
-import com.teskalabs.seacat.android.client.SeaCatClient;
 import com.teskalabs.cvio.CatVision;
-import java.io.IOException;
 
 public class DemoApplication extends Application
 {
@@ -13,17 +11,7 @@ public class DemoApplication extends Application
 	{
 		super.onCreate();
 
-		try {
-			SeaCatClient.setLogMask(SeaCatClient.LogFlag.ALL_SET);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		CatVision.downscale = 4;
-		CatVision.initialize();
-
-		// Enable SeaCat
-		SeaCatClient.initialize(getApplicationContext());
+		CatVision.initialize(this, publicAccessKey="klskfweojfewjfweoijfwoejfiowiefjwio"));
 	}
 
 }
