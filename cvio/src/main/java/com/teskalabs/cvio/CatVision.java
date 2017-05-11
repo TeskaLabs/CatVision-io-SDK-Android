@@ -60,7 +60,7 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 	private final VNCServer vncServer;
 	private final InAppInputManager inputManager;
 
-	private final String publicAccessKey;
+	private final String APIKeyId;
 
 	///
 
@@ -89,8 +89,8 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 	protected CatVision(Application app) {
 		super(app.getApplicationContext());
 
-		publicAccessKey = getMetaData(app.getApplicationContext(), "cvio.public_access_key");
-		if (publicAccessKey == null)
+		APIKeyId = getMetaData(app.getApplicationContext(), "cvio.api_key_id");
+		if (APIKeyId == null)
 		{
 			throw new RuntimeException("CatVision access key (cvio.public_access_key) not provided");
 		}
