@@ -5,6 +5,8 @@ import android.app.Application;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.hardware.display.DisplayManager;
@@ -13,6 +15,7 @@ import android.media.Image;
 import android.media.ImageReader;
 import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.DisplayMetrics;
@@ -32,8 +35,11 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 
 	private static final String TAG = CatVision.class.getName();
 
+	public static final String DEFAULT_CLIENT_HANDLE = "DefaultClientHandle";
+
+	protected static CVIOSeaCatPlugin cvioSeaCatPlugin = null;
 	private static final int port = 5900;
-	public static double downscale = 0.0;
+	private static double downscale = 0;
 
 	private MediaProjectionManager mProjectionManager = null;
 	private static MediaProjection sMediaProjection = null;
@@ -54,21 +60,42 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 	private final VNCServer vncServer;
 	private final InAppInputManager inputManager;
 
+	private final String publicAccessKey;
+
 	///
 
-	protected static CVIOSeaCatPlugin cvioSeaCatPlugin = null;
+	static protected CatVision instance = null;
 
-	public synchronized static void initialize() {
+	public synchronized static CatVision initialize(Application app) {
+
+		if (instance != null) throw new RuntimeException("Already initialized");
+		instance = new CatVision(app);
+
 		if (cvioSeaCatPlugin == null)
 		{
 			cvioSeaCatPlugin = new CVIOSeaCatPlugin(port);
 		}
+
+		return instance;
+	}
+
+	static public CatVision getInstance()
+	{
+		return instance;
 	}
 
 	///
 
 	protected CatVision(Application app) {
 		super(app.getApplicationContext());
+
+		publicAccessKey = getMetaData(app.getApplicationContext(), "cvio.public_access_key");
+		if (publicAccessKey == null)
+		{
+			throw new RuntimeException("CatVision access key (cvio.public_access_key) not provided");
+		}
+
+		cviojni.set_delegate(this);
 		vncServer = new VNCServer(this);
 		inputManager = new InAppInputManager(app);
 
@@ -82,6 +109,12 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 			Log.e(TAG, "SeaCatClient expcetion", e);
 		}
 
+	}
+
+	///
+
+	public void setClientHandle(String clientHandle)
+	{
 	}
 
 	///
@@ -336,19 +369,14 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 		return 0;
 	}
 
-	/****************************************** Singleton support ****************/
-	static protected CatVision instance = null;
-
-	static public CatVision CreateOrGet(Application app)
-	{
-		if (instance == null) instance = new CatVision(app);
-		cviojni.set_delegate(instance);
-		return instance;
+	public static String getMetaData(Context context, String name) {
+		try {
+			ApplicationInfo ai = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
+			Bundle bundle = ai.metaData;
+			return bundle.getString(name);
+		} catch (PackageManager.NameNotFoundException e) {
+			Log.e(TAG, "Unable to load meta-data: " + e.getMessage());
+		}
+		return null;
 	}
-
-	static public CatVision CreateOrGet(Activity activity)
-	{
-		return CreateOrGet(activity.getApplication());
-	}
-
 }

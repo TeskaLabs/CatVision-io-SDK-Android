@@ -11,7 +11,7 @@ public class DemoApplication extends Application
 	{
 		super.onCreate();
 
-		CatVision.initialize(this, publicAccessKey="klskfweojfewjfweoijfwoejfiowiefjwio"));
+		CatVision.initialize(this);
 	}
 
 }
