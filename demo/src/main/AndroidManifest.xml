@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <meta-data android:name="cvio.api_key_id" android:value="PublicAccessKeyExample" />
+        <meta-data android:name="cvio.api_key_id" android:value="G9F1URT/NREYrXO7SKYYdg" />
 
         <activity
             android:name=".MainActivity"
