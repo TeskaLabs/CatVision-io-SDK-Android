@@ -451,7 +451,7 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 
 	@Override
 	public void rfbKbdReleaseAllKeysProc(String client) {
-		Log.i(TAG, "rfbKbdReleaseAllKeysProc: client:"+client);
+		Log.d(TAG, "rfbKbdReleaseAllKeysProc: client:"+client);
 	}
 
 	///
@@ -465,7 +465,7 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 
 	@Override
 	public void rfbSetXCutTextProc(String text, String client) {
-		Log.i(TAG, "rfbSetXCutTextProc: text:"+text+" client:"+client);
+		Log.d(TAG, "rfbSetXCutTextProc: text:"+text+" client:"+client);
 	}
 
 	@Override
