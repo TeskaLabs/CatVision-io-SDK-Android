@@ -5,6 +5,7 @@ import android.app.Application;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.PixelFormat;
@@ -23,6 +24,7 @@ import android.util.Log;
 import android.view.Display;
 import android.view.OrientationEventListener;
 
+import com.teskalabs.seacat.android.client.CSR;
 import com.teskalabs.seacat.android.client.SeaCatClient;
 import com.teskalabs.seacat.android.client.socket.SocketConfig;
 import com.teskalabs.cvio.inapp.InAppInputManager;
@@ -35,7 +37,7 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 
 	private static final String TAG = CatVision.class.getName();
 
-	public static final String DEFAULT_CLIENT_HANDLE = "DefaultClientHandle";
+	public static final String DEFAULT_CLIENT_HANDLE = "-DefaultClientHandle-";
 
 	protected static CVIOSeaCatPlugin cvioSeaCatPlugin = null;
 	private static final int port = 5900;
@@ -61,6 +63,7 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 	private final InAppInputManager inputManager;
 
 	private final String APIKeyId;
+	private String clientHandle = null;
 
 	///
 
@@ -70,14 +73,11 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 
 		if (instance != null) throw new RuntimeException("Already initialized");
 
-		instance = new CatVision(app);
-
-		if (cvioSeaCatPlugin == null)
-		{
-			cvioSeaCatPlugin = new CVIOSeaCatPlugin(port);
+		try {
+			instance = new CatVision(app);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
 		}
-		// Enable SeaCat
-		SeaCatClient.initialize(app.getApplicationContext());
 
 		return instance;
 	}
@@ -89,35 +89,137 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 
 	///
 
-	protected CatVision(Application app) {
+	private CatVision(Application app) throws IOException {
 		super(app.getApplicationContext());
 
 		APIKeyId = getMetaData(app.getApplicationContext(), "cvio.api_key_id");
 		if (APIKeyId == null)
 		{
-			throw new RuntimeException("CatVision access key (cvio.public_access_key) not provided");
+			throw new RuntimeException("CatVision access key (cvio.api_key_id) not provided");
 		}
+
+		// Enable SeaCat
+		if (cvioSeaCatPlugin == null)
+		{
+			cvioSeaCatPlugin = new CVIOSeaCatPlugin(port);
+		}
+
+		SeaCatClient.setPackageName("com.teskalabs.cvio");
+		SeaCatClient.initialize(app.getApplicationContext(), new Runnable() {
+			@Override
+			public void run() {
+				CatVision.this.submitCSR();
+			}
+		});
+
+		//resetClientHandle();
 
 		cviojni.set_delegate(this);
 		vncServer = new VNCServer(this);
 		inputManager = new InAppInputManager(app);
 
-		try {
-			SeaCatClient.configureSocket(
-				port,
-				SocketConfig.Domain.AF_UNIX, SocketConfig.Type.SOCK_STREAM, 0,
-				vncServer.getSocketFileName(), ""
-			);
-		} catch (IOException e) {
-			Log.e(TAG, "SeaCatClient expcetion", e);
+		SeaCatClient.configureSocket(
+			port,
+			SocketConfig.Domain.AF_UNIX, SocketConfig.Type.SOCK_STREAM, 0,
+			vncServer.getSocketFileName(), ""
+		);
+	}
+
+	synchronized void submitCSR()
+	{
+		if (clientHandle == null)
+		{
+			Log.w(TAG, "Client handle is null, cannot submit CSR");
+			return;
 		}
 
+		String state = SeaCatClient.getState();
+		if (state.charAt(1) != 'C')
+		{
+			Log.w(TAG, "SeaCat is not ready for CSR");
+			return;
+		}
+
+		CSR csr = new CSR();
+		csr.setOrganization(getPackageName());
+		csr.setOrganizationUnit(APIKeyId);
+
+		if (clientHandle != DEFAULT_CLIENT_HANDLE)
+		{
+			csr.setUniqueIdentifier(clientHandle);
+		}
+
+		try {
+			csr.submit();
+		} catch (IOException e) {
+			Log.e(TAG, "Submitting CSR", e);
+		}
 	}
 
 	///
 
+	public void resetClientHandle()
+	{
+		SharedPreferences sharedPref = getSharedPreferences("cvio.prefs", Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = sharedPref.edit();
+		editor.remove("clientHandle");
+		editor.commit();
+
+		clientHandle = null;
+
+		try {
+			SeaCatClient.reset();
+		} catch (IOException e) {
+			Log.e(TAG, "Client reset", e);
+		}
+	}
+
 	public void setClientHandle(String clientHandle)
 	{
+		this.clientHandle = clientHandle;
+
+		SharedPreferences sharedPref = getSharedPreferences("cvio.prefs", Context.MODE_PRIVATE);
+		if (sharedPref.contains("clientHandle"))
+		{
+			if (!sharedPref.getString("clientHandle", "").equals(clientHandle))
+			{
+				// Reset identity is required, CSR will be submitted asynchronously
+				SharedPreferences.Editor editor = sharedPref.edit();
+				editor.putString("clientHandle", clientHandle);
+				editor.commit();
+
+				try {
+					SeaCatClient.reset();
+				} catch (IOException e) {
+					Log.e(TAG, "Reset identity", e);
+				}
+			}
+
+			else
+			{
+				String state = SeaCatClient.getState();
+				if (state.charAt(1) == 'C')
+				{
+					// CSR hasn't successfully reached SeaCat server due to e.g., network connection - try again
+					submitCSR();
+					return;
+				}
+
+				// clientHandle exists and CSR is submitted, client should be successfully onboarded now.
+				//TODO: Check SeaCatClient.getState() for all logical combinations (CSR has to be generated, submitted or accepted at this moment)
+				Log.w(TAG, "SeaCat client state: " + SeaCatClient.getState());
+			}
+		}
+
+		else {
+			// Fresh onboarding, client handle is new and CSR is to be submitted
+			SharedPreferences.Editor editor = sharedPref.edit();
+			editor.putString("clientHandle", clientHandle);
+			editor.commit();
+
+			submitCSR();
+		}
+
 	}
 
 	///
@@ -154,9 +256,9 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 		mHandler.post(new Runnable() {
 			@Override
 			public void run() {
-				if (sMediaProjection != null) {
-					sMediaProjection.stop();
-				}
+			if (sMediaProjection != null) {
+				sMediaProjection.stop();
+			}
 			}
 		});
 
@@ -245,14 +347,14 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 			mHandler.post(new Runnable() {
 				@Override
 				public void run() {
-					if (mVirtualDisplay != null) mVirtualDisplay.release();
-					if (mImageReader != null) mImageReader.setOnImageAvailableListener(null, null);
-					if (mOrientationChangeCallback != null) mOrientationChangeCallback.disable();
-					sMediaProjection.unregisterCallback(MediaProjectionStopCallback.this);
-					sMediaProjection = null;
+				if (mVirtualDisplay != null) mVirtualDisplay.release();
+				if (mImageReader != null) mImageReader.setOnImageAvailableListener(null, null);
+				if (mOrientationChangeCallback != null) mOrientationChangeCallback.disable();
+				sMediaProjection.unregisterCallback(MediaProjectionStopCallback.this);
+				sMediaProjection = null;
 
-					vncServer.stop();
-					stopRepeatingPing();
+				vncServer.stop();
+				stopRepeatingPing();
 				}
 			});
 		}
@@ -315,26 +417,26 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 	 * SeaCat Gateway ping
 	 ****************/
 
-	Runnable mStatusChecker = new Runnable() {
+	Runnable mPingRun = new Runnable() {
 		@Override
 		public void run() {
 			try {
 				SeaCatClient.ping();
 			} catch (IOException e) {
-				// No-op
+				Log.e(TAG, "SeaCat ping", e);
 			} finally {
-				mHandler.postDelayed(mStatusChecker, 30 * 1000); // Ensure that we are connected every 30 seconds
+				mHandler.postDelayed(mPingRun, 30 * 1000); // Ensure that we are connected every 30 seconds
 			}
 		}
 	};
 
 	protected void startRepeatingPing() {
-		mHandler.removeCallbacks(mStatusChecker);
-		mStatusChecker.run();
+		stopRepeatingPing();
+		mPingRun.run();
 	}
 
 	void stopRepeatingPing() {
-		mHandler.removeCallbacks(mStatusChecker);
+		mHandler.removeCallbacks(mPingRun);
 	}
 
 	/******************************************
