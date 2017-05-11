@@ -69,12 +69,15 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 	public synchronized static CatVision initialize(Application app) {
 
 		if (instance != null) throw new RuntimeException("Already initialized");
+
 		instance = new CatVision(app);
 
 		if (cvioSeaCatPlugin == null)
 		{
 			cvioSeaCatPlugin = new CVIOSeaCatPlugin(port);
 		}
+		// Enable SeaCat
+		SeaCatClient.initialize(app.getApplicationContext());
 
 		return instance;
 	}
