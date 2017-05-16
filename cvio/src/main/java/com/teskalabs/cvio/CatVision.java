@@ -481,7 +481,7 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 			ApplicationInfo ai = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
 			Bundle bundle = ai.metaData;
 			return bundle.getString(name);
-		} catch (PackageManager.NameNotFoundException e) {
+		} catch (PackageManager.NameNotFoundException|NullPointerException e) {
 			Log.e(TAG, "Unable to load meta-data: " + e.getMessage());
 		}
 		return null;
