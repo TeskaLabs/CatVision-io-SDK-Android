@@ -2,16 +2,16 @@
 
 BASEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 TMP=${BASEDIR}/tmp
-TMP_CVIO=${BASEDIR}/tmp/cvio
-TMP_SEACAT=${BASEDIR}/tmp/seacat
-TMP_BUILD=${BASEDIR}/tmp/build
-TMP_JAR=${BASEDIR}/tmp/tmp-jar
+TMP_CVIO=${TMP}/cvio
+TMP_SEACAT=${TMP}/seacat
+TMP_BUILD=${TMP}/build
+TMP_JAR=${TMP}/tmp-jar
 
 
 CVIO_AAR_FILE=CatVision_Android_a78ca93-dirty-release.aar
 
 # Clean
-rm -rf ${BASEDIR}/tmp
+rm -rf ${TMP}
 
 # Create dirs
 mkdir -p ${TMP_CVIO}
