@@ -7,11 +7,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
+
 import com.teskalabs.cvio.CatVision;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getName();
+
+    private FirebaseAnalytics mFirebaseAnalytics;
 
 	private CatVision catvision;
 	private int CATVISION_REQUEST_CODE = 100;
@@ -21,6 +25,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Obtain the FirebaseAnalytics instance.
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
 		catvision = CatVision.getInstance();
 		catvision.setClientHandle(CatVision.DEFAULT_CLIENT_HANDLE);
@@ -49,6 +56,11 @@ public class MainActivity extends AppCompatActivity {
 			menu.add(menuGroup1Id, menuItemStopCaptureId, 1, "Stop capture");
         } else {
 			menu.add(menuGroup1Id, menuItemStartCaptureId, 1, "Start capture");
+
+            Bundle bundle = new Bundle();
+            bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "start_capture");
+            bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "menu_item");
+            mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
         }
 
         return super.onPrepareOptionsMenu(menu);

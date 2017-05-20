@@ -1,0 +1,58 @@
+{
+  "project_info": {
+    "project_number": "729445720942",
+    "firebase_url": "https://cvio-demo.firebaseio.com",
+    "project_id": "cvio-demo",
+    "storage_bucket": "cvio-demo.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:729445720942:android:c67b2ef140bce758",
+        "android_client_info": {
+          "package_name": "com.teskalabs.cvio.demo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "729445720942-eu8roi972nl926lnf68i5f7viau9e5h3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.teskalabs.cvio.demo",
+            "certificate_hash": "71f286812a7e918ac8a1a7c619efe37ee33f18d0"
+          }
+        },
+        {
+          "client_id": "729445720942-l4389umgrf4tlv10p2vfncluke5ni6gm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyClzTWc2LUAvJLeTMaKCnLJxkz74maGH8Q"
+        },
+        {
+          "current_key": "AIzaSyBEm7X35b8sMgAkZlJrJSvGC2rIWlnf86Q"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "729445720942-l4389umgrf4tlv10p2vfncluke5ni6gm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
