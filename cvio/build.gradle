@@ -47,7 +47,7 @@ android {
         targetSdkVersion 25
         versionCode getVersionCode()
         versionName getVersionName()
-        setProperty("archivesBaseName", "SeaCatClient_Android_"+getVersionNameDashes())
+        setProperty("archivesBaseName", "CatVision_Android_"+getVersionNameDashes())
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
