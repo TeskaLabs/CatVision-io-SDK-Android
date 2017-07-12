@@ -38,6 +38,10 @@ def getVersionNameDashes = { ->
     }
 }
 
+def getArchiveBaseName = { ->
+    return "CatVision_Android_"+getVersionNameDashes()
+}
+
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.3"
@@ -47,7 +51,7 @@ android {
         targetSdkVersion 25
         versionCode getVersionCode()
         versionName getVersionName()
-        setProperty("archivesBaseName", "CatVision_Android_"+getVersionNameDashes())
+        setProperty("archivesBaseName", getArchiveBaseName())
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -62,6 +66,33 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+task assembleWithSeaCat(dependsOn: assemble) << {
+
+    android.libraryVariants.all { variant ->
+        variant.outputs.each { output ->
+            // Find SeaCat Client AAR
+            def seacatAARPath = ""
+            configurations.default.each {
+                if (it.name.contains("SeaCat")) {
+                    seacatAARPath = it.path
+                }
+            }
+            if (seacatAARPath == "") {
+                throw new GradleException('SeaCat AAR not found in project files.')
+            }
+
+            // Run merge script
+            def process
+            process = "${projectDir}/../merge_seacat_cvio_builds.sh ${seacatAARPath} ${output.outputFile.path}"
+            process = process.execute()
+            process.text.eachLine {println it}
+            if (process.exitValue() != 0) {
+                throw new GradleException("Execution of the merge script returned ${process.exitValue()}.")
+            }
         }
     }
 }
