@@ -97,6 +97,56 @@ task assembleWithSeaCat(dependsOn: assemble) << {
     }
 }
 
+task releaseAndAlign(dependsOn: assembleWithSeaCat) << {
+    android.libraryVariants.all { variant ->
+        if (variant.buildType.name == "release") {
+            variant.outputs.each { output ->
+                def ZIPALIGN = '/Users/mpavelka/Library/Android/sdk/build-tools/26.0.0/zipalign';
+                def APKSIGNER = '/Users/mpavelka/Library/Android/sdk/build-tools/25.0.3/apksigner';
+
+                def outputPathNoExt = output.outputFile.path[0..(output.outputFile.path.lastIndexOf('.')-1)]
+                def outputExt = output.outputFile.path[(output.outputFile.path.lastIndexOf('.')+1)..-1]
+
+                // zipalign
+                try {
+                    exec {
+                        executable "rm"
+                        args "${outputPathNoExt}-aligned.${outputExt}"
+                    }
+                } catch (Exception e) {}
+
+                def outputSignedPath = "${outputPathNoExt}-aligned.${outputExt}"
+                exec {
+                    executable "${ZIPALIGN}"
+                    args '-v', '-p', '4', "${output.outputFile.path}", "${outputSignedPath}"
+                }
+                return
+                // apksigner config
+//                def pkcsConfigPath = '/tmp/pkcs11_java.cfg'
+//                def pkcsConfigFile = new File(pkcsConfigPath)
+//                try {
+//                    pkcsConfigFile.delete()
+//                } catch(Exception e) {}
+//                try {
+//                    pkcsConfigFile.createNewFile()
+//                } catch (Exception e) {return null}
+//                def newLine = System.getProperty("line.separator")
+//                pkcsConfigFile << 'name = OpenSC-PKCS11' << newLine
+//                pkcsConfigFile << 'description = SunPKCS11 via OpenSC' << newLine
+//                pkcsConfigFile << 'library = /opt/local/lib/opensc-pkcs11.so' << newLine
+//                pkcsConfigFile << 'slotListIndex = 0' << newLine
+//                // run apksigner
+//                exec {
+////                    executable "${APKSIGNER}"
+////                    args '--ks-provider-class' 'sun.security.pkcs11.SunPKCS11' '--ks-provider-arg' pkcsCopnfigPath '--ks' 'NONE' '--ks-type' 'PKCS11' "${outputSignedPath}"
+//                    executable "jarsigner"
+//                    args '-providerClass' 'sun.security.pkcs11.SunPKCS11' '-providerArg' '/tmp/pkcs11_java.cfg' '-keystore' 'NONE' '-storetype' 'PKCS11' ${outputSignedPath} //'"Certificate for Digital Signature"'
+//                }
+            }
+        }
+    }
+}
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
