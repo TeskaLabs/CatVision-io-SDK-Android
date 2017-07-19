@@ -39,7 +39,7 @@ def getVersionNameDashes = { ->
 }
 
 def getArchiveBaseName = { ->
-    return "CatVision_Android_"+getVersionNameDashes()
+    return "catvision-io-sdk-android-"+getVersionNameDashes()
 }
 
 android {
@@ -145,6 +145,11 @@ task releaseAndAlign(dependsOn: assembleWithSeaCat) << {
             }
         }
     }
+}
+
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
 }
 
 dependencies {
