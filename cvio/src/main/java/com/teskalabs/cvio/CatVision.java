@@ -65,18 +65,22 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 	private final InAppInputManager inputManager;
 
 	private final String APIKeyId;
-	private String clientHandle = null;
+	private String clientHandle = DEFAULT_CLIENT_HANDLE;
 
 	///
 
 	static protected CatVision instance = null;
 
-	public synchronized static CatVision initialize(Application app) {
+	public static CatVision initialize(Application app) {
+		return initialize(app, false);
+	}
+
+	public synchronized static CatVision initialize(Application app, boolean hasClientHandle) {
 
 		if (instance != null) throw new RuntimeException("Already initialized");
 
 		try {
-			instance = new CatVision(app);
+			instance = new CatVision(app, hasClientHandle);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -91,7 +95,7 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 
 	///
 
-	private CatVision(Application app) throws IOException {
+	private CatVision(Application app, boolean hasClientHandle) throws IOException {
 		super(app.getApplicationContext());
 
 		APIKeyId = getMetaData(app.getApplicationContext(), "cvio.api_key_id");
@@ -104,6 +108,10 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 		if (cvioSeaCatPlugin == null)
 		{
 			cvioSeaCatPlugin = new CVIOSeaCatPlugin(port);
+		}
+
+		if (hasClientHandle) {
+			clientHandle = null;
 		}
 
 		SeaCatClient.setPackageName("com.teskalabs.cvio");
