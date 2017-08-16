@@ -98,7 +98,7 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 	private CatVision(Application app, boolean hasClientHandle) throws IOException {
 		super(app.getApplicationContext());
 
-		APIKeyId = getMetaData(app.getApplicationContext(), "cvio.api_key_id");
+		APIKeyId = getApplicationMetaData(app.getApplicationContext(), "cvio.api_key_id");
 		if (APIKeyId == null)
 		{
 			throw new RuntimeException("CatVision access key (cvio.api_key_id) not provided");
@@ -484,13 +484,17 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 		return 0;
 	}
 
-	public static String getMetaData(Context context, String name) {
+
+	/// Internal utility methods
+
+
+	private static String getApplicationMetaData(Context context, String name) {
 		try {
 			ApplicationInfo ai = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
 			Bundle bundle = ai.metaData;
 			return bundle.getString(name);
 		} catch (PackageManager.NameNotFoundException|NullPointerException e) {
-			Log.e(TAG, "Unable to load meta-data: " + e.getMessage());
+			Log.e(TAG, "Unable to load application meta-data: " + e.getMessage());
 		}
 		return null;
 	}
