@@ -168,6 +168,10 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 
 	///
 
+	public void reset() throws IOException {
+		SeaCatClient.reset();
+	}
+
 	public void resetClientHandle()
 	{
 		SharedPreferences sharedPref = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
@@ -178,7 +182,7 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 		clientHandle = null;
 
 		try {
-			SeaCatClient.reset();
+			this.reset();
 		} catch (IOException e) {
 			Log.e(TAG, "Client reset", e);
 		}
@@ -199,7 +203,7 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 				editor.commit();
 
 				try {
-					SeaCatClient.reset();
+					this.reset();
 				} catch (IOException e) {
 					Log.e(TAG, "Reset identity", e);
 				}
