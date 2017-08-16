@@ -37,8 +37,8 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 
 	private static final String TAG = CatVision.class.getName();
 
-	public static final String DEFAULT_CLIENT_HANDLE = "-DefaultClientHandle-";
-	private static final String PREFS_CLIENT_HANDLE_KEY = "clientHandle";
+	public static final String DEFAULT_CUSTOM_ID = "-DefaultCustomId-";
+	private static final String PREFS_CUSTOM_ID_KEY = "customId";
 	private static final String PREFS_NAME = "cvio.prefs";
 
 	protected static CVIOSeaCatPlugin cvioSeaCatPlugin = null;
@@ -65,7 +65,7 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 	private final InAppInputManager inputManager;
 
 	private final String APIKeyId;
-	private String clientHandle = DEFAULT_CLIENT_HANDLE;
+	private String customId = DEFAULT_CUSTOM_ID;
 
 	///
 
@@ -75,12 +75,12 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 		return initialize(app, false);
 	}
 
-	public synchronized static CatVision initialize(Application app, boolean hasClientHandle) {
+	public synchronized static CatVision initialize(Application app, boolean hasCustomId) {
 
 		if (instance != null) throw new RuntimeException("Already initialized");
 
 		try {
-			instance = new CatVision(app, hasClientHandle);
+			instance = new CatVision(app, hasCustomId);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -95,7 +95,7 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 
 	///
 
-	private CatVision(Application app, boolean hasClientHandle) throws IOException {
+	private CatVision(Application app, boolean hasCustomId) throws IOException {
 		super(app.getApplicationContext());
 
 		APIKeyId = getApplicationMetaData(app.getApplicationContext(), "cvio.api_key_id");
@@ -110,8 +110,8 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 			cvioSeaCatPlugin = new CVIOSeaCatPlugin(port);
 		}
 
-		if (hasClientHandle) {
-			clientHandle = null;
+		if (hasCustomId) {
+			customId = null;
 		}
 
 		SeaCatClient.setPackageName("com.teskalabs.cvio");
@@ -121,8 +121,6 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 				CatVision.this.submitCSR();
 			}
 		});
-
-		//resetClientHandle();
 
 		cviojni.set_delegate(this);
 		vncServer = new VNCServer(this);
@@ -137,9 +135,9 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 
 	synchronized void submitCSR()
 	{
-		if (clientHandle == null)
+		if (customId == null)
 		{
-			Log.w(TAG, "Client handle is null, cannot submit CSR");
+			Log.w(TAG, "Custom Id is null, cannot submit CSR");
 			return;
 		}
 
@@ -154,9 +152,9 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 		csr.setOrganization(getPackageName());
 		csr.setOrganizationUnit(APIKeyId);
 
-		if (clientHandle != DEFAULT_CLIENT_HANDLE)
+		if (customId != DEFAULT_CUSTOM_ID)
 		{
-			csr.setUniqueIdentifier(clientHandle);
+			csr.setUniqueIdentifier(customId);
 		}
 
 		try {
@@ -186,14 +184,14 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 
 	///
 
-	public void resetClientHandle()
+	public void resetCustomId()
 	{
 		SharedPreferences sharedPref = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = sharedPref.edit();
-		editor.remove(PREFS_CLIENT_HANDLE_KEY);
+		editor.remove(PREFS_CUSTOM_ID_KEY);
 		editor.commit();
 
-		clientHandle = null;
+		customId = null;
 
 		try {
 			this.reset();
@@ -202,18 +200,23 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 		}
 	}
 
-	public void setClientHandle(String clientHandle)
+	public String getCustomId()
 	{
-		this.clientHandle = clientHandle;
+		return this.customId;
+	}
+
+	public void setCustomId(String customId)
+	{
+		this.customId = customId;
 
 		SharedPreferences sharedPref = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-		if (sharedPref.contains(PREFS_CLIENT_HANDLE_KEY))
+		if (sharedPref.contains(PREFS_CUSTOM_ID_KEY))
 		{
-			if (!sharedPref.getString(PREFS_CLIENT_HANDLE_KEY, "").equals(clientHandle))
+			if (!sharedPref.getString(PREFS_CUSTOM_ID_KEY, "").equals(customId))
 			{
 				// Reset identity is required, CSR will be submitted asynchronously
 				SharedPreferences.Editor editor = sharedPref.edit();
-				editor.putString(PREFS_CLIENT_HANDLE_KEY, clientHandle);
+				editor.putString(PREFS_CUSTOM_ID_KEY, customId);
 				editor.commit();
 
 				try {
@@ -233,16 +236,16 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 					return;
 				}
 
-				// clientHandle exists and CSR is submitted, client should be successfully onboarded now.
+				// customId exists and CSR is submitted, client should be successfully onboarded now.
 				//TODO: Check SeaCatClient.getState() for all logical combinations (CSR has to be generated, submitted or accepted at this moment)
 				Log.w(TAG, "SeaCat client state: " + SeaCatClient.getState());
 			}
 		}
 
 		else {
-			// Fresh onboarding, client handle is new and CSR is to be submitted
+			// Fresh onboarding, custom id is new and CSR is to be submitted
 			SharedPreferences.Editor editor = sharedPref.edit();
-			editor.putString(PREFS_CLIENT_HANDLE_KEY, clientHandle);
+			editor.putString(PREFS_CUSTOM_ID_KEY, customId);
 			editor.commit();
 
 			submitCSR();

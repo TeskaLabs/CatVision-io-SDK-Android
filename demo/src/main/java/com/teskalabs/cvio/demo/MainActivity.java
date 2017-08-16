@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
 		catvision = CatVision.getInstance();
-		catvision.setClientHandle(CatVision.DEFAULT_CLIENT_HANDLE);
+		catvision.setCustomId(CatVision.DEFAULT_CUSTOM_ID);
 	}
 
     @Override
