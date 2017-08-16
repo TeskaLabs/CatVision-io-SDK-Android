@@ -166,11 +166,25 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 		}
 	}
 
-	///
+	/// Methods from SeaCatClient
 
 	public void reset() throws IOException {
 		SeaCatClient.reset();
 	}
+
+	public String getClientTag() {
+		return SeaCatClient.getClientTag();
+	}
+
+	public String getClientId() {
+		return SeaCatClient.getClientId();
+	}
+
+	public String getState() {
+		return SeaCatClient.getState();
+	}
+
+	///
 
 	public void resetClientHandle()
 	{
