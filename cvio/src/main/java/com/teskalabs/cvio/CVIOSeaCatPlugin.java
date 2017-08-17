@@ -14,7 +14,7 @@ final public class CVIOSeaCatPlugin extends SeaCatPlugin {
 	}
 
 	@Override
-	public Properties getCapabilities(){
+	public Properties getCharacteristics(){
 		Properties p = new Properties();
 		p.setProperty("RA", "vnc:"+port);
 		return p;
