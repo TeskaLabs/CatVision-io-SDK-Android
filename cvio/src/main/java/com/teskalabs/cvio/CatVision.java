@@ -1,5 +1,6 @@
 package com.teskalabs.cvio;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
@@ -16,6 +17,7 @@ import android.media.Image;
 import android.media.ImageReader;
 import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -24,6 +26,9 @@ import android.util.Log;
 import android.view.Display;
 import android.view.OrientationEventListener;
 
+import com.teskalabs.cvio.exceptions.CatVisionException;
+import com.teskalabs.cvio.exceptions.CatVisionNotSupportedException;
+import com.teskalabs.cvio.exceptions.MissingAPIKeyException;
 import com.teskalabs.seacat.android.client.CSR;
 import com.teskalabs.seacat.android.client.SeaCatClient;
 import com.teskalabs.seacat.android.client.socket.SocketConfig;
@@ -71,18 +76,18 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 
 	static protected CatVision instance = null;
 
-	public static CatVision initialize(Application app) {
+	public static CatVision initialize(Application app) throws CatVisionException {
 		return initialize(app, false);
 	}
 
-	public synchronized static CatVision initialize(Application app, boolean hasCustomId) {
+	public synchronized static CatVision initialize(Application app, boolean hasCustomId) throws CatVisionException {
 
-		if (instance != null) throw new RuntimeException("Already initialized");
+		if (instance != null) throw new CatVisionException("CatVision already initialized");
 
 		try {
 			instance = new CatVision(app, hasCustomId);
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+			throw new CatVisionException(e);
 		}
 
 		return instance;
@@ -95,13 +100,18 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 
 	///
 
-	private CatVision(Application app, boolean hasCustomId) throws IOException {
+	private CatVision(Application app, boolean hasCustomId) throws IOException, CatVisionException {
 		super(app.getApplicationContext());
+
+		// API level compatibility check
+		if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+			throw new CatVisionNotSupportedException("Can't initialize CatVision. The minimum supported API level is 21.");
+		}
 
 		APIKeyId = getApplicationMetaData(app.getApplicationContext(), "cvio.api_key_id");
 		if (APIKeyId == null)
 		{
-			throw new RuntimeException("CatVision access key (cvio.api_key_id) not provided");
+			throw new MissingAPIKeyException("CatVision access key (cvio.api_key_id) not provided");
 		}
 
 		// Enable SeaCat
@@ -256,28 +266,33 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 	///
 
 	public void requestStart(Activity activity, int requestCode) {
-		// call for the projection manager
-		mProjectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
+		if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+			Log.w(TAG, "Can't run requestStart() due to a low API level. API level 21 or higher is required.");
+			return;
+		} else {
+			// call for the projection manager
+			mProjectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
 
-		if (sCaptureThread == null) {
-			// start capture handling thread
-			sCaptureThread = new Thread(new Runnable() {
-				public void run() {
-					Looper.prepare();
-					mHandler = new Handler();
-					Looper.loop();
-				}
-			});
-			sCaptureThread.start();
+			if (sCaptureThread == null) {
+				// start capture handling thread
+				sCaptureThread = new Thread(new Runnable() {
+					public void run() {
+						Looper.prepare();
+						mHandler = new Handler();
+						Looper.loop();
+					}
+				});
+				sCaptureThread.start();
+			}
+
+			try {
+				SeaCatClient.connect();
+			} catch (IOException e) {
+				Log.e(TAG, "SeaCatClient expcetion", e);
+			}
+
+			activity.startActivityForResult(mProjectionManager.createScreenCaptureIntent(), requestCode);
 		}
-
-		try {
-			SeaCatClient.connect();
-		} catch (IOException e) {
-			Log.e(TAG, "SeaCatClient expcetion", e);
-		}
-
-		activity.startActivityForResult(mProjectionManager.createScreenCaptureIntent(), requestCode);
 	}
 
 	public void stop() {
@@ -287,9 +302,14 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 		mHandler.post(new Runnable() {
 			@Override
 			public void run() {
-			if (sMediaProjection != null) {
-				sMediaProjection.stop();
-			}
+				if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+					Log.w(TAG, "Can't run stop() due to a low API level. API level 21 or higher is required.");
+					return;
+				} else {
+					if (sMediaProjection != null) {
+						sMediaProjection.stop();
+					}
+				}
 			}
 		});
 
@@ -302,35 +322,41 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 	}
 
 	public void onActivityResult(Activity activity, int resultCode, Intent data) {
-		sMediaProjection = mProjectionManager.getMediaProjection(resultCode, data);
+		if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+			Log.w(TAG, "Can't run onActivityResult due to a low API level. API level 21 or higher is required.");
+			return;
+		} else {
 
-		if (sMediaProjection != null) {
-			// display metrics
-			DisplayMetrics metrics = getResources().getDisplayMetrics();
-			mDensity = metrics.densityDpi;
-			mDisplay = activity.getWindowManager().getDefaultDisplay();
+			sMediaProjection = mProjectionManager.getMediaProjection(resultCode, data);
 
-			if (downscale == 0) {
-				if (mDensity < 150) {
-					downscale = 1;
-				} else if (mDensity < 300) {
-					downscale = 2;
-				} else {
-					downscale = 4;
+			if (sMediaProjection != null) {
+				// display metrics
+				DisplayMetrics metrics = getResources().getDisplayMetrics();
+				mDensity = metrics.densityDpi;
+				mDisplay = activity.getWindowManager().getDefaultDisplay();
+
+				if (downscale == 0) {
+					if (mDensity < 150) {
+						downscale = 1;
+					} else if (mDensity < 300) {
+						downscale = 2;
+					} else {
+						downscale = 4;
+					}
 				}
+
+				// create virtual display depending on device width / height
+				createVirtualDisplay();
+
+				// register orientation change callback
+				mOrientationChangeCallback = new OrientationChangeCallback(this);
+				if (mOrientationChangeCallback.canDetectOrientation()) {
+					mOrientationChangeCallback.enable();
+				}
+
+				// register media projection stop callback
+				sMediaProjection.registerCallback(new MediaProjectionStopCallback(), mHandler);
 			}
-
-			// create virtual display depending on device width / height
-			createVirtualDisplay();
-
-			// register orientation change callback
-			mOrientationChangeCallback = new OrientationChangeCallback(this);
-			if (mOrientationChangeCallback.canDetectOrientation()) {
-				mOrientationChangeCallback.enable();
-			}
-
-			// register media projection stop callback
-			sMediaProjection.registerCallback(new MediaProjectionStopCallback(), mHandler);
 		}
 	}
 
@@ -338,6 +364,7 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 	 * Here we receive Images
 	 ****************/
 
+	@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 	private class ImageAvailableListener implements ImageReader.OnImageAvailableListener {
 		@Override
 		public void onImageAvailable(ImageReader reader) {
@@ -347,23 +374,28 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 
 	@Override
 	public void takeImage() {
-		//TODO: Consider synchronisation
-		if (mImageReader == null) return;
+		if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+			Log.w(TAG, "Can't run takeImage() due to a low API level. API level 21 or higher is required.");
+			return;
+		} else {
+			//TODO: Consider synchronisation
+			if (mImageReader == null) return;
 
-		Image image = null;
-		try {
-			image = mImageReader.acquireLatestImage();
-			if (image != null) {
-				Image.Plane[] planes = image.getPlanes();
-				ByteBuffer b = planes[0].getBuffer();
-				// planes[0].getPixelStride() has to be 4 (32 bit)
-				cviojni.push_pixels(b, planes[0].getRowStride());
-			}
-		} catch (Exception e) {
-			Log.e(TAG, "ImageReader", e);
-		} finally {
-			if (image != null) {
-				image.close();
+			Image image = null;
+			try {
+				image = mImageReader.acquireLatestImage();
+				if (image != null) {
+					Image.Plane[] planes = image.getPlanes();
+					ByteBuffer b = planes[0].getBuffer();
+					// planes[0].getPixelStride() has to be 4 (32 bit)
+					cviojni.push_pixels(b, planes[0].getRowStride());
+				}
+			} catch (Exception e) {
+				Log.e(TAG, "ImageReader", e);
+			} finally {
+				if (image != null) {
+					image.close();
+				}
 			}
 		}
 	}
@@ -372,12 +404,18 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 	 * Stopping media projection
 	 ****************/
 
+	@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 	private class MediaProjectionStopCallback extends MediaProjection.Callback {
 		@Override
 		public void onStop() {
+
 			mHandler.post(new Runnable() {
 				@Override
 				public void run() {
+				if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+					Log.w(TAG, "Can't run MediaProjectionStopCallback.onStop() due to a low API level. API level 21 or higher is required.");
+					return;
+				}
 				if (mVirtualDisplay != null) mVirtualDisplay.release();
 				if (mImageReader != null) mImageReader.setOnImageAvailableListener(null, null);
 				if (mOrientationChangeCallback != null) mOrientationChangeCallback.disable();
@@ -395,7 +433,7 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 	/******************************************
 	 * Orientation change listener
 	 ****************/
-
+	@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 	private class OrientationChangeCallback extends OrientationEventListener {
 		OrientationChangeCallback(Context context) {
 			super(context);
@@ -403,6 +441,10 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 
 		@Override
 		public void onOrientationChanged(int orientation) {
+			if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+				Log.w(TAG, "Can't run onOrientationChanged due to a low API level. API level 21 or higher is required.");
+				return;
+			}
 			synchronized (this) {
 				final int rotation = mDisplay.getRotation();
 				if (rotation != mRotation) {
@@ -426,7 +468,12 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 	/******************************************
 	 * Factoring Virtual Display creation
 	 ****************/
+	@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 	private void createVirtualDisplay() {
+		if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+			Log.w(TAG, "Can't run createVirtualDisplay() due to a low API level. API level 21 or higher is required.");
+			return;
+		}
 		// get width and height
 		Point size = new Point();
 		mDisplay.getRealSize(size);
