@@ -190,7 +190,7 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 		SharedPreferences sharedPref = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = sharedPref.edit();
 		editor.remove(PREFS_CUSTOM_ID_KEY);
-		editor.commit();
+		editor.apply();
 
 		customId = null;
 
@@ -218,7 +218,7 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 				// Reset identity is required, CSR will be submitted asynchronously
 				SharedPreferences.Editor editor = sharedPref.edit();
 				editor.putString(PREFS_CUSTOM_ID_KEY, customId);
-				editor.commit();
+				editor.apply();
 
 				try {
 					this.reset();
@@ -247,7 +247,7 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 			// Fresh onboarding, custom id is new and CSR is to be submitted
 			SharedPreferences.Editor editor = sharedPref.edit();
 			editor.putString(PREFS_CUSTOM_ID_KEY, customId);
-			editor.commit();
+			editor.apply();
 
 			submitCSR();
 		}
