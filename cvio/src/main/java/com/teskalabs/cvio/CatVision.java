@@ -27,7 +27,6 @@ import android.view.Display;
 import android.view.OrientationEventListener;
 
 import com.teskalabs.cvio.exceptions.CatVisionException;
-import com.teskalabs.cvio.exceptions.CatVisionNotSupportedException;
 import com.teskalabs.cvio.exceptions.MissingAPIKeyException;
 
 import com.teskalabs.seacat.android.client.CSR;
