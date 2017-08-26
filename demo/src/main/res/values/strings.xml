@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">CatVision.io</string>
-    <string name="app_label">CatVision Remote Access</string>
+    <string name="app_label">CatVision.io</string>
     <string name="title_activity_test_area">Test Area</string>
 </resources>
