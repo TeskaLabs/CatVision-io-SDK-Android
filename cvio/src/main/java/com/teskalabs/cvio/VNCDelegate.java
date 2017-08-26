@@ -2,7 +2,7 @@ package com.teskalabs.cvio;
 
 interface VNCDelegate
 {
-	int takeImage();
+	int takeImage(); // Return value: 0 - image has been pushed to VNCServer.push(), 1 - VNC server is requested to shutdown immediately
 
 	// rfb* callbacks
 

@@ -128,8 +128,7 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 			}
 		});
 
-		cviojni.set_delegate(this);
-		vncServer = new VNCServer(this);
+		vncServer = new VNCServer(this, this);
 		inputManager = new InAppInputManager(app);
 
 		SeaCatClient.configureSocket(
@@ -270,7 +269,7 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 			mProjectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
 
 			if (sCaptureThread == null) {
-				// start capture handling thread
+				// run capture handling thread
 				sCaptureThread = new Thread(new Runnable() {
 					public void run() {
 						Looper.prepare();
@@ -299,7 +298,7 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 			@Override
 			public void run() {
 				if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-					Log.w(TAG, "Can't run stop() due to a low API level. API level 21 or higher is required.");
+					Log.w(TAG, "Can't run shutdown() due to a low API level. API level 21 or higher is required.");
 					return;
 				} else {
 					if (sMediaProjection != null) {
@@ -309,7 +308,7 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 			}
 		});
 
-		vncServer.stop();
+		vncServer.shutdown();
 		stopRepeatingPing();
 
 		try {
@@ -340,7 +339,10 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 			if (sMediaProjection != null) {
 
 				try {
-					mHandler.post(new JSONMessageTrigger("cvio-capture-started").put("ClientTag", CatVision.this.getClientTag()));
+					mHandler.post(new JSONMessageTrigger("cvio-capture-started")
+						.put("ClientTag", CatVision.this.getClientTag())
+						.put("AppId", getPackageName())
+					);
 				} catch (Exception e) {
 					Log.e(TAG, "Failed to trigger SeaCat event", e);
 				}
@@ -369,7 +371,7 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 					mOrientationChangeCallback.enable();
 				}
 
-				// register media projection stop callback
+				// register media projection shutdown callback
 				sMediaProjection.registerCallback(new MediaProjectionStopCallback(), mHandler);
 			}
 		}
@@ -383,7 +385,7 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 	private class ImageAvailableListener implements ImageReader.OnImageAvailableListener {
 		@Override
 		public void onImageAvailable(ImageReader reader) {
-			cviojni.image_ready();
+			vncServer.imageReady();
 		}
 	}
 
@@ -400,22 +402,7 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 			try {
 				image = mImageReader.acquireLatestImage();
 				if (image != null) {
-					Image.Plane[] planes = image.getPlanes();
-					ByteBuffer b = planes[0].getBuffer();
-					if (mMediaProjectionPixelFormat == PixelFormat.RGBA_8888) {
-						// planes[0].getPixelStride() has to be 4 (32 bit)
-						cviojni.push_pixels_rgba_8888(b, planes[0].getRowStride());
-					}
-					else if (mMediaProjectionPixelFormat == PixelFormat.RGB_565)
-					{
-						// planes[0].getPixelStride() has to be 16 (16 bit)
-						cviojni.push_pixels_rgba_565(b, planes[0].getRowStride());
-					}
-					else
-					{
-						Log.e(TAG, "Image reader acquired unsupported image format " + mMediaProjectionPixelFormat);
-					}
-
+					vncServer.push(image, mMediaProjectionPixelFormat);
 				}
 			} catch (UnsupportedOperationException e)
 			{
@@ -468,7 +455,7 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 				sMediaProjection.unregisterCallback(MediaProjectionStopCallback.this);
 				sMediaProjection = null;
 
-				vncServer.stop();
+				vncServer.shutdown();
 				stopRepeatingPing();
 				}
 			});
@@ -526,13 +513,13 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 		int mWidth = (int)(size.x / downscale);
 		int mHeight = (int)(size.y / downscale);
 
-		vncServer.stop();
-		vncServer.start(mWidth, mHeight);
+		vncServer.shutdown();
+		vncServer.run(mWidth, mHeight);
 		startRepeatingPing();
 
 		int VIRTUAL_DISPLAY_FLAGS = DisplayManager.VIRTUAL_DISPLAY_FLAG_OWN_CONTENT_ONLY | DisplayManager.VIRTUAL_DISPLAY_FLAG_PUBLIC;
 
-		// start capture reader
+		// run capture reader
 		mImageReader = ImageReader.newInstance(mWidth, mHeight, mMediaProjectionPixelFormat, 2);
 		mVirtualDisplay = sMediaProjection.createVirtualDisplay("cvio", mWidth, mHeight, mDensity, VIRTUAL_DISPLAY_FLAGS, mImageReader.getSurface(), null, mHandler);
 		mImageReader.setOnImageAvailableListener(new ImageAvailableListener(), mHandler);

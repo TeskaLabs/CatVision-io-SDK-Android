@@ -1,26 +1,37 @@
 package com.teskalabs.cvio;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.graphics.PixelFormat;
+import android.media.Image;
+import android.os.Build;
 import android.util.Log;
+
+import java.nio.ByteBuffer;
 
 class VNCServer extends ContextWrapper {
 
     private static final String TAG = VNCServer.class.getName();
-
     private Thread mVNCThread = null;
-
 	private final String socketFileName;
 
-    public VNCServer(Context base) {
+	static {
+		// JNI part of this class
+		System.loadLibrary("cviojni");
+	}
+
+    public VNCServer(Context base, VNCDelegate delegate) {
 		super(base);
+
+		jni_set_delegate(delegate);
 
 		// There has to be one directory (/s/) - it is used to ensure correct access level
 		socketFileName = getDir("cvio", Context.MODE_PRIVATE).getAbsolutePath() + "/s/vnc";
     }
 
 
-    public boolean start(final int screenWidth, final int screenHeight)
+    public boolean run(final int screenWidth, final int screenHeight)
     {
         if ((screenWidth < 0) || (screenHeight < 0))
         {
@@ -32,8 +43,8 @@ class VNCServer extends ContextWrapper {
 			// Check if VNC Thread is alive
 			while (this.mVNCThread != null) {
 				int rc;
-				rc = cviojni.shutdown_vnc_server();
-				if (rc != 0) Log.w(TAG, "shutdown_vnc_server returned: " + rc);
+				rc = jni_shutdown();
+				if (rc != 0) Log.w(TAG, "jni_shutdown returned: " + rc);
 
 				try {
 					this.mVNCThread.join(5000);
@@ -55,7 +66,7 @@ class VNCServer extends ContextWrapper {
 
 						Log.d(TAG, "VNC Server started");
 
-						rc = cviojni.run_vnc_server(socketFileName, screenWidth, screenHeight);
+						rc = jni_run(socketFileName, screenWidth, screenHeight);
 						if (rc != 0) Log.w(TAG, "VNC Server thread exited with rc: " + rc);
 
 						Log.i(TAG, "VNC Server terminated");
@@ -71,7 +82,7 @@ class VNCServer extends ContextWrapper {
     }
 
 
-    public void stop() {
+    public void shutdown() {
 
 		if (this.mVNCThread == null) return;
 
@@ -79,8 +90,8 @@ class VNCServer extends ContextWrapper {
 
 			while (this.mVNCThread != null) {
 				int rc;
-				rc = cviojni.shutdown_vnc_server();
-				if (rc != 0) Log.w(TAG, "shutdown_vnc_server returned: " + rc);
+				rc = jni_shutdown();
+				if (rc != 0) Log.w(TAG, "jni_shutdown returned: " + rc);
 
 				try {
 					this.mVNCThread.join(5000);
@@ -99,5 +110,41 @@ class VNCServer extends ContextWrapper {
 	public String getSocketFileName() {
 		return socketFileName;
 	}
+
+	// Signalize that we have an image ready
+	public void imageReady() {
+		jni_image_ready();
+	}
+
+	@TargetApi(Build.VERSION_CODES.LOLLIPOP)
+	public void push(Image image, int pixelFormat) {
+		Image.Plane[] planes = image.getPlanes();
+		ByteBuffer b = planes[0].getBuffer();
+		if (pixelFormat == PixelFormat.RGBA_8888) {
+			// planes[0].getPixelStride() has to be 4 (32 bit)
+			jni_push_pixels_rgba_8888(b, planes[0].getRowStride());
+		}
+		else if (pixelFormat == PixelFormat.RGB_565)
+		{
+			// planes[0].getPixelStride() has to be 16 (16 bit)
+			jni_push_pixels_rgba_565(b, planes[0].getRowStride());
+		}
+		else
+		{
+			Log.e(TAG, "Image reader acquired unsupported image format " + pixelFormat);
+		}
+	}
+
+	// JNI interface to VNC server
+
+	private static native int jni_run(String socketPath, int width, int height);
+	private static native int jni_shutdown();
+
+	private static native void jni_image_ready(); // Send a 'signal' to VNC server that we have a image ready
+
+	private static native int jni_push_pixels_rgba_8888(ByteBuffer pixels, int row_stride);
+	private static native int jni_push_pixels_rgba_565(ByteBuffer pixels, int row_stride);
+
+	private static native void jni_set_delegate(VNCDelegate ra);
 
 }
