@@ -33,10 +33,18 @@ JNIEXPORT void JNICALL Java_com_teskalabs_cvio_cviojni_image_1ready
 
 /*
  * Class:     com_teskalabs_cvio_cviojni
- * Method:    push_pixels
+ * Method:    push_pixels_rgba_8888
  * Signature: (Ljava/nio/ByteBuffer;I)I
  */
-JNIEXPORT jint JNICALL Java_com_teskalabs_cvio_cviojni_push_1pixels
+JNIEXPORT jint JNICALL Java_com_teskalabs_cvio_cviojni_push_1pixels_1rgba_18888
+  (JNIEnv *, jclass, jobject, jint);
+
+/*
+ * Class:     com_teskalabs_cvio_cviojni
+ * Method:    push_pixels_rgba_565
+ * Signature: (Ljava/nio/ByteBuffer;I)I
+ */
+JNIEXPORT jint JNICALL Java_com_teskalabs_cvio_cviojni_push_1pixels_1rgba_1565
   (JNIEnv *, jclass, jobject, jint);
 
 /*

@@ -28,7 +28,7 @@
 static JavaVM * g_java_vm = NULL;
 
 static jobject g_delegate_obj = NULL;
-static jmethodID g_ra_JNICALLBACK_take_picture_mid = 0;
+static jmethodID g_ra_JNICALLBACK_take_image_mid = 0;
 
 static jmethodID g_ra_JNICALLBACK_rfbPtrAddEventProc_mid = 0;
 static void ptrAddEvent(int buttonMask, int x, int y, rfbClientPtr cl);
@@ -49,6 +49,7 @@ static const char * TAG = "cviojni";
 
 ///
 
+// We need a word to capture a pixel (aka 16bit color or actually 15bit)
 #define BPP      (2)
 
 ///
@@ -121,8 +122,8 @@ JNIEXPORT void JNICALL Java_com_teskalabs_cvio_cviojni_set_1delegate(JNIEnv * en
 		return;
 	}
 
-	g_ra_JNICALLBACK_take_picture_mid = (*env)->GetMethodID(env, g_clazz, "takeImage", "()V");
-	if (g_ra_JNICALLBACK_take_picture_mid == 0)
+	g_ra_JNICALLBACK_take_image_mid = (*env)->GetMethodID(env, g_clazz, "takeImage", "()I");
+	if (g_ra_JNICALLBACK_take_image_mid == 0)
 	{
 		__android_log_print(ANDROID_LOG_ERROR, TAG, "Failed to get method id: takeImage()");
 		return;
@@ -166,8 +167,9 @@ JNIEXPORT void JNICALL Java_com_teskalabs_cvio_cviojni_set_1delegate(JNIEnv * en
 }
 
 
-static void takePicture()
+static int takeImage()
 {
+	int ret = 1;
 	JNIEnv * g_env;
 	assert(g_java_vm != NULL);
 
@@ -177,22 +179,24 @@ static void takePicture()
 		if ((*g_java_vm)->AttachCurrentThread(g_java_vm, (JNINATIVEINTERFACEPTR) &g_env, NULL) != 0)
 		{
 			__android_log_print(ANDROID_LOG_ERROR, TAG, "AttachCurrentThread failed");
-			return;
+			return ret;
 		}
 	}
 	else if (getEnvStat == JNI_EVERSION)
 	{
 		__android_log_print(ANDROID_LOG_ERROR, TAG, "version not supported");
-		return;
+		return ret;
 	}
 
 	if (g_delegate_obj != NULL)
 	{
-		(*g_env)->CallVoidMethod(g_env, g_delegate_obj, g_ra_JNICALLBACK_take_picture_mid, NULL);
+		ret = (*g_env)->CallIntMethod(g_env, g_delegate_obj, g_ra_JNICALLBACK_take_image_mid, NULL);
 	}
 
 	if (getEnvStat == JNI_EDETACHED)
 		(*g_java_vm)->DetachCurrentThread(g_java_vm);
+
+	return ret;
 }
 
 ///
@@ -345,9 +349,17 @@ JNIEXPORT jint JNICALL Java_com_teskalabs_cvio_cviojni_run_1vnc_1server(JNIEnv *
 		if (imageReady != 0)
 		{
 			imageReady = 0;
-			takePicture();
+			int ret = takeImage();
+			if (ret != 0)
+			{
+				// takeImage() requested VNC server shutdown
+				serverShutdown = 1;
+				rfbShutdownServer(serverScreen, (1==1));
+				serverShutdown = 2;
+				continue;
+			}
 		}
-          
+
 		long usec = serverScreen->deferUpdateTime*1000;
 		rfbProcessEvents(serverScreen, usec);
 
@@ -381,7 +393,7 @@ JNIEXPORT void JNICALL Java_com_teskalabs_cvio_cviojni_image_1ready(JNIEnv * env
 }
 
 
-JNIEXPORT jint JNICALL Java_com_teskalabs_cvio_cviojni_push_1pixels(JNIEnv * env, jclass cls, jobject pixels, jint s_stride)
+JNIEXPORT jint JNICALL Java_com_teskalabs_cvio_cviojni_push_1pixels_1rgba_18888(JNIEnv * env, jclass cls, jobject pixels, jint s_stride)
 {
 	if (serverShutdown != 0) return 0;
 	if (serverScreen == NULL) return 0;
@@ -422,11 +434,11 @@ JNIEXPORT jint JNICALL Java_com_teskalabs_cvio_cviojni_push_1pixels(JNIEnv * env
 				return -1;
 			}
 
-			const uint16_t r = s[si+2] >> 3;
+			const uint16_t r = s[si+0] >> 3;
 			const uint16_t g = s[si+1] >> 3;
-			const uint16_t b = s[si+0] >> 3;
+			const uint16_t b = s[si+2] >> 3;
 
-			const uint16_t p = (r << 10) | (g << 5) | b;
+			const uint16_t p = (b << 10) | (g << 5) | r;
 			
 			if (t[tpos] == p) continue; // No update needed
 			t[tpos] = p;
@@ -447,6 +459,75 @@ JNIEXPORT jint JNICALL Java_com_teskalabs_cvio_cviojni_push_1pixels(JNIEnv * env
 
 	return 0;
 }
+
+
+JNIEXPORT jint JNICALL Java_com_teskalabs_cvio_cviojni_push_1pixels_1rgba_1565(JNIEnv * env, jclass cls, jobject pixels, jint s_stride)
+{
+	if (serverShutdown != 0) return 0;
+	if (serverScreen == NULL) return 0;
+
+	jbyte * fbptr;
+	fbptr = (*env)->GetDirectBufferAddress(env, pixels); 
+	if (fbptr == 0)
+	{
+		__android_log_print(ANDROID_LOG_ERROR, TAG, "Failed to get direct buffer address.");
+		return -1;
+	}
+
+	int len = (*env)->GetDirectBufferCapacity(env, pixels); 
+	if (len <= 0)
+	{
+		__android_log_print(ANDROID_LOG_ERROR, TAG, "Invalid direct buffer len: %d", len);
+		return -1;
+	}
+
+	// This needs to be super-optimized!
+	// TODO: See NEON/SIMD optimisations in libyuv https://chromium.googlesource.com/libyuv/libyuv/+/master/source/row_neon64.cc 
+	uint16_t * s = (uint16_t *)fbptr; // RGB_565
+	uint16_t * t = (uint16_t *)serverScreen->frameBuffer; // RGB_555
+
+	int max_x=-1,max_y=-1, min_x=99999, min_y=99999;
+
+	for (int y=0; y < screenInfo.height; y+=1)
+	{
+		int tpos = (y * screenInfo.line_stride) + screenInfo.x_offset;
+		const int spos = y * (s_stride / 2);
+
+		for (int x=0; x < screenInfo.width; x+=1, tpos+=1)
+		{
+			const int si = spos + x;
+			if ((si*2) > len)
+			{
+				__android_log_print(ANDROID_LOG_ERROR, TAG, "Direct buffer overflow: %d vs %d %dx%d spos:%d sceen:%dx%d s_stride:%d", si, len, x, y, spos, screenInfo.width, screenInfo.height, s_stride);
+				return -1;
+			}
+
+			const uint16_t r = (s[si] >> 11) & 0x001F;
+			const uint16_t g = (s[si] >>  6) & 0x001F;
+			const uint16_t b = (s[si]      ) & 0x001F;
+
+    		const uint16_t p = (b << 10) | (g << 5) | r;
+
+			if (t[tpos] == p) continue; // No update needed
+			t[tpos] = p;
+
+			if (x > max_x) max_x = x;
+			if (x < min_x) min_x = x;
+			if (y > max_y) max_y = y;
+			if (y < min_y) min_y = y;
+		}
+	}
+
+	if (max_x == -1) return 0; // No update needed
+
+	rfbMarkRectAsModified(serverScreen,
+		screenInfo.x_offset + min_x    , min_y,
+		screenInfo.x_offset + max_x + 1, max_y + 1
+	);
+
+	return 0;
+}
+
 
 
 // Callbacks section

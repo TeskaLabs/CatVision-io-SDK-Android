@@ -12,7 +12,9 @@ public class cviojni {
 	public static native int shutdown_vnc_server();
 
 	public static native void image_ready(); // Send a 'signal' to VNC server that we have a image ready
-	public static native int push_pixels(ByteBuffer pixels, int row_stride);
+
+	public static native int push_pixels_rgba_8888(ByteBuffer pixels, int row_stride);
+	public static native int push_pixels_rgba_565(ByteBuffer pixels, int row_stride);
 
 	public static native void set_delegate(VNCDelegate ra);
 }

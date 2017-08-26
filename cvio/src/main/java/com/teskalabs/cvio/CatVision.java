@@ -68,6 +68,8 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 	private final String APIKeyId;
 	private String customId = DEFAULT_CUSTOM_ID;
 
+	private int mMediaProjectionPixelFormat = PixelFormat.RGBA_8888;
+
 	///
 
 	static protected CatVision instance = null;
@@ -364,9 +366,9 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 	}
 
 	@Override
-	public void takeImage() {
+	public int takeImage() {
 		//TODO: Consider synchronisation
-		if (mImageReader == null) return;
+		if (mImageReader == null) return 0;
 
 		Image image = null;
 		try {
@@ -374,16 +376,48 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 			if (image != null) {
 				Image.Plane[] planes = image.getPlanes();
 				ByteBuffer b = planes[0].getBuffer();
-				// planes[0].getPixelStride() has to be 4 (32 bit)
-				cviojni.push_pixels(b, planes[0].getRowStride());
+				if (mMediaProjectionPixelFormat == PixelFormat.RGBA_8888) {
+					// planes[0].getPixelStride() has to be 4 (32 bit)
+					cviojni.push_pixels_rgba_8888(b, planes[0].getRowStride());
+				}
+				else if (mMediaProjectionPixelFormat == PixelFormat.RGB_565)
+				{
+					// planes[0].getPixelStride() has to be 16 (16 bit)
+					cviojni.push_pixels_rgba_565(b, planes[0].getRowStride());
+				}
+				else
+				{
+					Log.e(TAG, "Image reader acquired unsupported image format " + mMediaProjectionPixelFormat);
+				}
+
+			}
+		} catch (UnsupportedOperationException e)
+		{
+			if (mImageReader.getImageFormat() == PixelFormat.RGBA_8888)
+			{
+				Log.w(TAG, "Swiching image format from RGBA_8888 to RGB_565");
+				mMediaProjectionPixelFormat = PixelFormat.RGB_565;
+				// New virtual display has to be created out of this JNI callback otherwise there will be a deadlock
+				mHandler.post(new Runnable() {
+					@Override
+					public void run() {
+						createVirtualDisplay();
+					}
+				});
+				return 1; // Ask for shutdown
+			}
+			else {
+				Log.e(TAG, "ImageReader/UnsupportedOperationException", e);
 			}
 		} catch (Exception e) {
-			Log.e(TAG, "ImageReader", e);
+			Log.e(TAG, "ImageReader.Exception", e);
 		} finally {
 			if (image != null) {
 				image.close();
 			}
 		}
+
+		return 0;
 	}
 
 	/******************************************
@@ -456,8 +490,8 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 		startRepeatingPing();
 
 		// start capture reader
-		mImageReader = ImageReader.newInstance(mWidth, mHeight, PixelFormat.RGBA_8888, 2);
-		mVirtualDisplay = sMediaProjection.createVirtualDisplay("cviodisplay", mWidth, mHeight, mDensity, VIRTUAL_DISPLAY_FLAGS, mImageReader.getSurface(), null, mHandler);
+		mImageReader = ImageReader.newInstance(mWidth, mHeight, mMediaProjectionPixelFormat, 2);
+		mVirtualDisplay = sMediaProjection.createVirtualDisplay("cvio", mWidth, mHeight, mDensity, VIRTUAL_DISPLAY_FLAGS, mImageReader.getSurface(), null, mHandler);
 		mImageReader.setOnImageAvailableListener(new ImageAvailableListener(), mHandler);
 	}
 

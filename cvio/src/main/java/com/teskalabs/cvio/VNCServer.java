@@ -28,37 +28,44 @@ class VNCServer extends ContextWrapper {
             return false;
         }
 
-        // Check if VNC Thread is alive
-        if (this.mVNCThread != null)
-        {
-            try {
-                this.mVNCThread.join(1);
-            } catch (InterruptedException e) {
-                // No-op
-            }
-            if (!this.mVNCThread.isAlive())
-            {
-                this.mVNCThread = null;
-            }
-        }
+		synchronized (this) {
+			// Check if VNC Thread is alive
+			while (this.mVNCThread != null) {
+				int rc;
+				rc = cviojni.shutdown_vnc_server();
+				if (rc != 0) Log.w(TAG, "shutdown_vnc_server returned: " + rc);
 
-        // Prepare VNC thread and launch
-        if (this.mVNCThread == null)
-        {
-            this.mVNCThread = new Thread(new Runnable() { public void run() {
-                int rc;
+				try {
+					this.mVNCThread.join(5000);
+					if (this.mVNCThread.isAlive()) {
+						Log.w(TAG, this.mVNCThread + " is still joining ...");
+						continue;
+					}
+					this.mVNCThread = null;
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
 
-                Log.d(TAG, "VNC Server started");
+			// Prepare VNC thread and launch
+			if (this.mVNCThread == null) {
+				this.mVNCThread = new Thread(new Runnable() {
+					public void run() {
+						int rc;
 
-                rc = cviojni.run_vnc_server(socketFileName, screenWidth, screenHeight);
-                if (rc != 0) Log.w(TAG, "VNC Server thread exited with rc: " + rc);
+						Log.d(TAG, "VNC Server started");
 
-                Log.i(TAG, "VNC Server terminated");
-            }});
-            this.mVNCThread.setName("cvioVNCThread");
-            this.mVNCThread.setDaemon(true);
-            this.mVNCThread.start();
-        }
+						rc = cviojni.run_vnc_server(socketFileName, screenWidth, screenHeight);
+						if (rc != 0) Log.w(TAG, "VNC Server thread exited with rc: " + rc);
+
+						Log.i(TAG, "VNC Server terminated");
+					}
+				});
+				this.mVNCThread.setName("cvioVNCThread");
+				this.mVNCThread.setDaemon(true);
+				this.mVNCThread.start();
+			}
+		}
 
         return true;
     }
@@ -68,19 +75,25 @@ class VNCServer extends ContextWrapper {
 
 		if (this.mVNCThread == null) return;
 
-        int rc;
-        rc = cviojni.shutdown_vnc_server();
-        if (rc != 0) Log.w(TAG, "shutdown_vnc_server returned: " + rc);
+		synchronized (this) {
 
-        if (this.mVNCThread != null)
-        {
-            try {
-                this.mVNCThread.join(5000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            this.mVNCThread = null;
-        }
+			while (this.mVNCThread != null) {
+				int rc;
+				rc = cviojni.shutdown_vnc_server();
+				if (rc != 0) Log.w(TAG, "shutdown_vnc_server returned: " + rc);
+
+				try {
+					this.mVNCThread.join(5000);
+					if (this.mVNCThread.isAlive()) {
+						Log.w(TAG, this.mVNCThread + " is still joining ...");
+						continue;
+					}
+					this.mVNCThread = null;
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}
     }
 
 	public String getSocketFileName() {

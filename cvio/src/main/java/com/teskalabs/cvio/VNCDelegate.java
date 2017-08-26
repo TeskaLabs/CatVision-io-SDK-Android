@@ -2,7 +2,7 @@ package com.teskalabs.cvio;
 
 interface VNCDelegate
 {
-	void takeImage();
+	int takeImage();
 
 	// rfb* callbacks
 
