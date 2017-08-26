@@ -1,10 +1,7 @@
 package com.teskalabs.cvio.demo;
 
 import android.app.Application;
-import android.util.Log;
-
 import com.teskalabs.cvio.CatVision;
-import com.teskalabs.cvio.exceptions.CatVisionException;
 
 public class DemoApplication extends Application
 {
