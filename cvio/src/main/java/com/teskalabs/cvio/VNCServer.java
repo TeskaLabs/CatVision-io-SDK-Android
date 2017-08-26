@@ -8,13 +8,20 @@ import android.media.Image;
 import android.os.Build;
 import android.util.Log;
 
+import com.teskalabs.seacat.android.client.SeaCatClient;
+import com.teskalabs.seacat.android.client.socket.SocketConfig;
+
+import java.io.IOException;
 import java.nio.ByteBuffer;
 
 class VNCServer extends ContextWrapper {
 
     private static final String TAG = VNCServer.class.getName();
-    private Thread mVNCThread = null;
+	protected static CVIOSeaCatPlugin cvioSeaCatPlugin = null;
+
+	private Thread mVNCThread = null;
 	private final String socketFileName;
+	private static final int port = 5900;
 
 	static {
 		// JNI part of this class
@@ -24,14 +31,27 @@ class VNCServer extends ContextWrapper {
     public VNCServer(Context base, VNCDelegate delegate) {
 		super(base);
 
+		// Enable SeaCat
+		if (cvioSeaCatPlugin == null) {
+			cvioSeaCatPlugin = new CVIOSeaCatPlugin(port);
+		}
+
 		jni_set_delegate(delegate);
 
 		// There has to be one directory (/s/) - it is used to ensure correct access level
 		socketFileName = getDir("cvio", Context.MODE_PRIVATE).getAbsolutePath() + "/s/vnc";
     }
 
+	public void configureSeaCat() throws IOException {
+		SeaCatClient.configureSocket(
+			port,
+			SocketConfig.Domain.AF_UNIX, SocketConfig.Type.SOCK_STREAM, 0,
+			socketFileName, ""
+		);
+	}
 
-    public boolean run(final int screenWidth, final int screenHeight)
+
+	public boolean run(final int screenWidth, final int screenHeight)
     {
         if ((screenWidth < 0) || (screenHeight < 0))
         {
@@ -106,10 +126,6 @@ class VNCServer extends ContextWrapper {
 			}
 		}
     }
-
-	public String getSocketFileName() {
-		return socketFileName;
-	}
 
 	// Signalize that we have an image ready
 	public void imageReady() {

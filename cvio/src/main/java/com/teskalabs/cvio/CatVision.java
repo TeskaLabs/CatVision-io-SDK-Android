@@ -1,5 +1,7 @@
 package com.teskalabs.cvio;
 
+import java.io.IOException;
+
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Application;
@@ -28,17 +30,13 @@ import android.view.OrientationEventListener;
 
 import com.teskalabs.cvio.exceptions.CatVisionException;
 import com.teskalabs.cvio.exceptions.MissingAPIKeyException;
-
-import com.teskalabs.seacat.android.client.CSR;
-import com.teskalabs.seacat.android.client.SeaCatClient;
-import com.teskalabs.seacat.android.client.socket.SocketConfig;
-import com.teskalabs.seacat.android.client.message.JSONMessageTrigger;
-
 import com.teskalabs.cvio.inapp.InAppInputManager;
 import com.teskalabs.cvio.inapp.KeySym;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
+import com.teskalabs.seacat.android.client.CSR;
+import com.teskalabs.seacat.android.client.SeaCatClient;
+import com.teskalabs.seacat.android.client.message.JSONMessageTrigger;
+
 
 public class CatVision extends ContextWrapper implements VNCDelegate {
 
@@ -48,8 +46,6 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 	private static final String PREFS_CUSTOM_ID_KEY = "customId";
 	private static final String PREFS_NAME = "cvio.prefs";
 
-	protected static CVIOSeaCatPlugin cvioSeaCatPlugin = null;
-	private static final int port = 5900;
 	private static double downscale = 0;
 
 	private MediaProjectionManager mProjectionManager = null;
@@ -111,14 +107,11 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 			throw new MissingAPIKeyException("CatVision access key (cvio.api_key_id) not provided");
 		}
 
-		// Enable SeaCat
-		if (cvioSeaCatPlugin == null) {
-			cvioSeaCatPlugin = new CVIOSeaCatPlugin(port);
-		}
-
 		if (hasCustomId) {
 			customId = null;
 		}
+
+		vncServer = new VNCServer(this, this);
 
 		SeaCatClient.setPackageName("com.teskalabs.cvio");
 		SeaCatClient.initialize(app.getApplicationContext(), new Runnable() {
@@ -128,14 +121,9 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 			}
 		});
 
-		vncServer = new VNCServer(this, this);
 		inputManager = new InAppInputManager(app);
 
-		SeaCatClient.configureSocket(
-			port,
-			SocketConfig.Domain.AF_UNIX, SocketConfig.Type.SOCK_STREAM, 0,
-			vncServer.getSocketFileName(), ""
-		);
+		vncServer.configureSeaCat();
 	}
 
 	synchronized void submitCSR()
