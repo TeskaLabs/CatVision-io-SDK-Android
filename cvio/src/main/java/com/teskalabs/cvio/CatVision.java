@@ -24,6 +24,7 @@ import android.util.Log;
 import android.view.Display;
 import android.view.OrientationEventListener;
 
+import com.teskalabs.cvio.message.SeaCatJSONMessageTrigger;
 import com.teskalabs.seacat.android.client.CSR;
 import com.teskalabs.seacat.android.client.SeaCatClient;
 import com.teskalabs.seacat.android.client.socket.SocketConfig;
@@ -295,6 +296,17 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 
 		vncServer.stop();
 		stopRepeatingPing();
+
+		try {
+			mHandler.post(new SeaCatJSONMessageTrigger("cvio-capture-stopped") {
+				@Override
+				public void onPostExecute() {
+					Log.i(TAG, "Trigger 'cvio-capture-stopped' result:" + this.getResponseBody().toString());
+				}
+			}.put("ClientTag", CatVision.this.getClientTag()));
+		} catch (Exception e) {
+			Log.e(TAG, "Failed to trigger SeaCat event", e);
+		}
 	}
 
 	public boolean isStarted() {
@@ -303,8 +315,14 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 
 	public void onActivityResult(Activity activity, int resultCode, Intent data) {
 		sMediaProjection = mProjectionManager.getMediaProjection(resultCode, data);
-
 		if (sMediaProjection != null) {
+
+			try {
+				mHandler.post(new SeaCatJSONMessageTrigger("cvio-capture-started").put("ClientTag", CatVision.this.getClientTag()));
+			} catch (Exception e) {
+				Log.e(TAG, "Failed to trigger SeaCat event", e);
+			}
+
 			// display metrics
 			DisplayMetrics metrics = getResources().getDisplayMetrics();
 			mDensity = metrics.densityDpi;
@@ -501,13 +519,15 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 
 	@Override
 	public int rfbNewClientHook(String client) {
-		Log.i(TAG, "New VNC client:"+client);
+		try {
+			mHandler.post(new SeaCatJSONMessageTrigger("cvio-new-client").put("VNCClient", client).put("ClientTag", CatVision.this.getClientTag()));
+		} catch (Exception e) {
+			Log.e(TAG, "Failed to trigger SeaCat event", e);
+		}
 		return 0;
 	}
 
-
 	/// Internal utility methods
-
 
 	private static String getApplicationMetaData(Context context, String name) {
 		try {
