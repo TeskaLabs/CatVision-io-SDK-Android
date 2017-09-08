@@ -29,6 +29,7 @@ import android.view.Display;
 import android.view.OrientationEventListener;
 
 import com.teskalabs.cvio.exceptions.CatVisionException;
+import com.teskalabs.cvio.exceptions.CatVisionNotSupportedException;
 import com.teskalabs.cvio.exceptions.MissingAPIKeyException;
 import com.teskalabs.cvio.inapp.InAppInputManager;
 import com.teskalabs.cvio.inapp.KeySym;
@@ -85,7 +86,10 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 
 		try {
 			instance = new CatVision(app, hasCustomId);
-		} catch (Exception e) {
+		} catch (CatVisionNotSupportedException e) {
+			Log.d(TAG, "CatVision.io SDK requires Android API level 21 and higher.");
+			return null;
+		}catch (Exception e) {
 			return null;
 		}
 
