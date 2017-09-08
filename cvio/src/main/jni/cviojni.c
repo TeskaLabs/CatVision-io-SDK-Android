@@ -13,7 +13,7 @@
 #include <libgen.h>
 
 #include "rfb/rfb.h"
-#include "com_teskalabs_cvio_VNCServer.h"
+#include "com_teskalabs_cvio_cviojni.h"
 
 ///
 
@@ -45,7 +45,7 @@ static jmethodID g_ra_JNICALLBACK_rfbKbdReleaseAllKeysProc_mid = 0;
 static void setXCutText(char* str,int len, struct _rfbClientRec* cl);
 static jmethodID g_ra_JNICALLBACK_rfbSetXCutTextProc_mid = 0;
 
-static const char * TAG = "com.teskalabs.cvio.VNCServer.jni";
+static const char * TAG = "com.teskalabs.cvio.cviojni";
 
 ///
 
@@ -106,7 +106,7 @@ jint JNI_OnLoad(JavaVM* vm, void* reserved)
 
 ///
 
-JNIEXPORT void JNICALL Java_com_teskalabs_cvio_VNCServer_jni_1set_1delegate(JNIEnv * env, jclass cls, jobject ra)
+JNIEXPORT void JNICALL Java_com_teskalabs_cvio_cviojni_jni_1set_1delegate(JNIEnv * env, jclass cls, jobject ra)
 {
 	assert(g_delegate_obj == NULL);
 
@@ -270,7 +270,7 @@ static struct
 
 static volatile int imageReady = 0;
 
-JNIEXPORT jint JNICALL Java_com_teskalabs_cvio_VNCServer_jni_1run(JNIEnv * env, jclass cls, jstring socketDir, jint width, jint height)
+JNIEXPORT jint JNICALL Java_com_teskalabs_cvio_cviojni_jni_1run(JNIEnv * env, jclass cls, jstring socketDir, jint width, jint height)
 {
 	int argc=1;
 
@@ -380,20 +380,20 @@ JNIEXPORT jint JNICALL Java_com_teskalabs_cvio_VNCServer_jni_1run(JNIEnv * env, 
 }
 
 
-JNIEXPORT jint JNICALL Java_com_teskalabs_cvio_VNCServer_jni_1shutdown(JNIEnv * env, jclass cls)
+JNIEXPORT jint JNICALL Java_com_teskalabs_cvio_cviojni_jni_1shutdown(JNIEnv * env, jclass cls)
 {
 	if (serverShutdown == 0) serverShutdown = 1;
 	return 0;
 }
 
 
-JNIEXPORT void JNICALL Java_com_teskalabs_cvio_VNCServer_jni_1image_1ready(JNIEnv * env, jclass cls)
+JNIEXPORT void JNICALL Java_com_teskalabs_cvio_cviojni_jni_1image_1ready(JNIEnv * env, jclass cls)
 {
 	imageReady += 1;
 }
 
 
-JNIEXPORT jint JNICALL Java_com_teskalabs_cvio_VNCServer_jni_1push_1pixels_1rgba_18888(JNIEnv * env, jclass cls, jobject pixels, jint s_stride)
+JNIEXPORT jint JNICALL Java_com_teskalabs_cvio_cviojni_jni_1push_1pixels_1rgba_18888(JNIEnv * env, jclass cls, jobject pixels, jint s_stride)
 {
 	if (serverShutdown != 0) return 0;
 	if (serverScreen == NULL) return 0;
@@ -461,7 +461,7 @@ JNIEXPORT jint JNICALL Java_com_teskalabs_cvio_VNCServer_jni_1push_1pixels_1rgba
 }
 
 
-JNIEXPORT jint JNICALL Java_com_teskalabs_cvio_VNCServer_jni_1push_1pixels_1rgba_1565(JNIEnv * env, jclass cls, jobject pixels, jint s_stride)
+JNIEXPORT jint JNICALL Java_com_teskalabs_cvio_cviojni_jni_1push_1pixels_1rgba_1565(JNIEnv * env, jclass cls, jobject pixels, jint s_stride)
 {
 	if (serverShutdown != 0) return 0;
 	if (serverScreen == NULL) return 0;

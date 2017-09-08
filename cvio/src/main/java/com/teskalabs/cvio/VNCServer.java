@@ -14,6 +14,8 @@ import com.teskalabs.seacat.android.client.socket.SocketConfig;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
+import static com.teskalabs.cvio.cviojni.*;
+
 class VNCServer extends ContextWrapper {
 
     private static final String TAG = VNCServer.class.getName();
@@ -22,11 +24,6 @@ class VNCServer extends ContextWrapper {
 	private Thread mVNCThread = null;
 	private final String socketFileName;
 	private static final int port = 5900;
-
-	static {
-		// JNI part of this class
-		System.loadLibrary("cviojni");
-	}
 
     public VNCServer(Context base, VNCDelegate delegate) {
 		super(base);
@@ -150,17 +147,5 @@ class VNCServer extends ContextWrapper {
 			Log.e(TAG, "Image reader acquired unsupported image format " + pixelFormat);
 		}
 	}
-
-	// JNI interface to VNC server
-
-	private static native int jni_run(String socketPath, int width, int height);
-	private static native int jni_shutdown();
-
-	private static native void jni_image_ready(); // Send a 'signal' to VNC server that we have a image ready
-
-	private static native int jni_push_pixels_rgba_8888(ByteBuffer pixels, int row_stride);
-	private static native int jni_push_pixels_rgba_565(ByteBuffer pixels, int row_stride);
-
-	private static native void jni_set_delegate(VNCDelegate ra);
 
 }
