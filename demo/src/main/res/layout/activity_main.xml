@@ -40,6 +40,7 @@
             android:layout_centerHorizontal="true"
             android:layout_weight="1"
             android:background="@android:color/holo_orange_dark"
+            android:elevation="0dp"
             android:onClick="onClickDemoArea"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
