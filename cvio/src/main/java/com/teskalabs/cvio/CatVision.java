@@ -72,6 +72,7 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 
 	private int mMediaProjectionPixelFormat = PixelFormat.RGBA_8888;
 
+	static final int minAPILevel = Build.VERSION_CODES.LOLLIPOP;
 	///
 
 	static protected CatVision instance = null;
@@ -105,6 +106,11 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 
 	private CatVision(Application app, boolean hasCustomId) throws IOException, CatVisionException {
 		super(app.getApplicationContext());
+
+		// API level compatibility check
+		if (android.os.Build.VERSION.SDK_INT < minAPILevel) {
+			throw new CatVisionNotSupportedException("Can't initialize CatVision. The minimum supported API level is 21.");
+		}
 
 		APIKeyId = getApplicationMetaData(app.getApplicationContext(), "cvio.api_key_id");
 		if (APIKeyId == null) {
@@ -253,7 +259,7 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 	///
 
 	public void requestStart(Activity activity, int requestCode) {
-		if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+		if (android.os.Build.VERSION.SDK_INT < minAPILevel) {
 			Log.w(TAG, "Can't run requestStart() due to a low API level. API level 21 or higher is required.");
 			return;
 		} else {
@@ -289,7 +295,7 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 		mHandler.post(new Runnable() {
 			@Override
 			public void run() {
-				if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+				if (android.os.Build.VERSION.SDK_INT < minAPILevel) {
 					Log.w(TAG, "Can't run shutdown() due to a low API level. API level 21 or higher is required.");
 					return;
 				} else {
@@ -321,7 +327,7 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 
 	public void onActivityResult(Activity activity, int resultCode, Intent data) {
 
-		if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+		if (android.os.Build.VERSION.SDK_INT < minAPILevel) {
 			Log.w(TAG, "Can't run onActivityResult due to a low API level. API level 21 or higher is required.");
 			return;
 		}
@@ -373,7 +379,7 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 	 * Here we receive Images
 	 ****************/
 
-	@TargetApi(Build.VERSION_CODES.LOLLIPOP)
+	@TargetApi(minAPILevel)
 	private class ImageAvailableListener implements ImageReader.OnImageAvailableListener {
 		@Override
 		public void onImageAvailable(ImageReader reader) {
@@ -383,7 +389,7 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 
 	@Override
 	public int takeImage() {
-		if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+		if (android.os.Build.VERSION.SDK_INT < minAPILevel) {
 			Log.w(TAG, "Can't run takeImage() due to a low API level. API level 21 or higher is required.");
 			return 1; // Ask for shutdown
 		} else {
@@ -429,7 +435,7 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 	 * Stopping media projection
 	 ****************/
 
-	@TargetApi(Build.VERSION_CODES.LOLLIPOP)
+	@TargetApi(minAPILevel)
 	private class MediaProjectionStopCallback extends MediaProjection.Callback {
 		@Override
 		public void onStop() {
@@ -437,7 +443,7 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 			mHandler.post(new Runnable() {
 				@Override
 				public void run() {
-				if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+				if (android.os.Build.VERSION.SDK_INT < minAPILevel) {
 					Log.w(TAG, "Can't run MediaProjectionStopCallback.onStop() due to a low API level. API level 21 or higher is required.");
 					return;
 				}
@@ -458,7 +464,7 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 	/******************************************
 	 * Orientation change listener
 	 ****************/
-	@TargetApi(Build.VERSION_CODES.LOLLIPOP)
+	@TargetApi(minAPILevel)
 	private class OrientationChangeCallback extends OrientationEventListener {
 		OrientationChangeCallback(Context context) {
 			super(context);
@@ -466,7 +472,7 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 
 		@Override
 		public void onOrientationChanged(int orientation) {
-			if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+			if (android.os.Build.VERSION.SDK_INT < minAPILevel) {
 				Log.w(TAG, "Can't run onOrientationChanged due to a low API level. API level 21 or higher is required.");
 				return;
 			}
@@ -493,9 +499,9 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 	/******************************************
 	 * Factoring Virtual Display creation
 	 ****************/
-	@TargetApi(Build.VERSION_CODES.LOLLIPOP)
+	@TargetApi(minAPILevel)
 	private void createVirtualDisplay() {
-		if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+		if (android.os.Build.VERSION.SDK_INT < minAPILevel) {
 			Log.w(TAG, "Can't run createVirtualDisplay() due to a low API level. API level 21 or higher is required.");
 			return;
 		}
