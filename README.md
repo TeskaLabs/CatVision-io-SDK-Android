@@ -2,7 +2,7 @@
 
 CatVision Android is a module for your Android application and is one of the **CatVision** components that makes it possible to securely transfer screen, mouse and keyboard events to your mobile and IoT device.
 
-![CatVision.io](https://teskalabscom.azureedge.net/media/img/solutions/teskalabs_remoteaccess_illustration.png)
+![CatVision.io](https://teskalabscom.azureedge.net/media/img/solutions/teskalabs_catvisionio_illustration.png)
 
 You can watch a [demonstration video](https://www.youtube.com/watch?v=bKjMwUtapxc) from our early development stage.
 
