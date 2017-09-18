@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 
@@ -14,6 +15,7 @@ import com.teskalabs.cvio.CatVision;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getName();
+    private TextView clientTagTextView = null;
 
     private FirebaseAnalytics mFirebaseAnalytics;
 
@@ -31,12 +33,15 @@ public class MainActivity extends AppCompatActivity {
 
 		catvision = CatVision.getInstance();
 		catvision.setCustomId(CatVision.DEFAULT_CUSTOM_ID);
+
+        clientTagTextView = (TextView) findViewById(R.id.client_tag_text);
 	}
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CATVISION_REQUEST_CODE) {
 			catvision.onActivityResult(this, resultCode, data);
+            clientTagTextView.setText(catvision.getClientTag());
         }
     }
 

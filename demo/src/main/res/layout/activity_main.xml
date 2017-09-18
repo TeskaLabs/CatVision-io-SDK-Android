@@ -16,7 +16,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
+        android:gravity="top|center"
         android:orientation="vertical">
 
         <ImageView
@@ -24,28 +24,33 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_above="@+id/test_area_btn"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
             android:layout_weight="1"
             android:textAlignment="center"
-            app:srcCompat="@drawable/catvision_logo"/>
+            app:srcCompat="@drawable/catvision_logo" />
+
+        <TextView
+            android:id="@+id/client_tag_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="bottom|center"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp"
+            android:text="@string/no_client_tag"
+            android:textColor="@color/Whiteish_BFC9DCFF"
+            android:textSize="18sp" />
 
         <Button
             android:id="@+id/test_area_btn"
             style="@style/Widget.AppCompat.Button.Borderless.Colored"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_weight="1"
             android:background="@android:color/holo_orange_dark"
             android:elevation="0dp"
             android:onClick="onClickDemoArea"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
             android:text="Test area"
-            android:textColor="@android:color/background_light"/>
+            android:textColor="@android:color/background_light" />
     </LinearLayout>
 
 </RelativeLayout>
