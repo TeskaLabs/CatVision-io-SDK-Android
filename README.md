@@ -1,6 +1,6 @@
-# CatVision Android
+# CatVision.io SDK for Android
 
-CatVision Android is a module for your Android application and is one of the **CatVision** components that makes it possible to securely transfer screen, mouse and keyboard events to your mobile and IoT device.
+CatVision.io SDK for Android is an library that enables to securely share screen of the app or device. It also enables to remotely control your app via mouse and keyboard events sent to your application.
 
 ![CatVision.io](https://teskalabscom.azureedge.net/media/img/solutions/teskalabs_catvisionio_illustration.png)
 
