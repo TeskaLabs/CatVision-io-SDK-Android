@@ -203,52 +203,52 @@ static int takeImage()
 
 static int rfbListenOnUNIXPort(const char * path)
 {
-    struct sockaddr_un addr;
-    int sock;
-    int rc;
+	struct sockaddr_un addr;
+	int sock;
+	int rc;
 
-    // Create UNIX socket in the folder that is -rwx------
-    // See http://stackoverflow.com/questions/20171747/how-to-create-unix-domain-socket-with-a-specific-permissions
-    char pathbuf[512];
-    strcpy(pathbuf, path);
-    char * dir = dirname(pathbuf);
-    rc = mkdir(dir, S_IRWXU);
-    if (rc != 0)
-    {
-    	if (errno == EEXIST) chmod(dir, S_IRWXU);
-    }
+	// Create UNIX socket in the folder that is -rwx------
+	// See http://stackoverflow.com/questions/20171747/how-to-create-unix-domain-socket-with-a-specific-permissions
+	char pathbuf[512];
+	strcpy(pathbuf, path);
+	char * dir = dirname(pathbuf);
+	rc = mkdir(dir, S_IRWXU);
+	if (rc != 0)
+	{
+		if (errno == EEXIST) chmod(dir, S_IRWXU);
+	}
 
-    memset(&addr, 0, sizeof(struct sockaddr_un));
-    addr.sun_family = AF_UNIX;
+	memset(&addr, 0, sizeof(struct sockaddr_un));
+	addr.sun_family = AF_UNIX;
 	strcpy(addr.sun_path, path);
 	unlink(addr.sun_path);
-	int len = strlen(addr.sun_path) + sizeof(addr.sun_family);
+	socklen_t len = (socklen_t)strlen(addr.sun_path) + 1 + sizeof(addr.sun_family);
 
-    if ((sock = socket(AF_UNIX, SOCK_STREAM, 0)) < 0)
-    {
-    	__android_log_print(ANDROID_LOG_ERROR, TAG, "socket() failed %d", errno);
+	if ((sock = socket(AF_UNIX, SOCK_STREAM, 0)) < 0)
+	{
+		__android_log_print(ANDROID_LOG_ERROR, TAG, "socket() failed %d", errno);
 		return -1;
-    }
+	}
 
-    fchmod(sock, S_IRUSR | S_IWUSR);
+	fchmod(sock, S_IRUSR | S_IWUSR);
 
-    if (bind(sock, (struct sockaddr *)&addr, len) < 0)
-    {
-    	__android_log_print(ANDROID_LOG_ERROR, TAG, "bind() failed %d", errno);
+	if (bind(sock, (struct sockaddr *)&addr, len) < 0)
+	{
+		__android_log_print(ANDROID_LOG_ERROR, TAG, "bind() failed %d", errno);
 		close(sock);
 		return -1;
-    }
+	}
 
-    fchmod(sock, S_IRUSR | S_IWUSR);
+	fchmod(sock, S_IRUSR | S_IWUSR);
 
-    if (listen(sock, 32) < 0)
-    {
-    	__android_log_print(ANDROID_LOG_ERROR, TAG, "listen() failed %d", errno);
+	if (listen(sock, 32) < 0)
+	{
+		__android_log_print(ANDROID_LOG_ERROR, TAG, "listen() failed %d", errno);
 		close(sock);
 		return -1;
-    }
+	}
 
-    return sock;
+	return sock;
 }
 
 ////
@@ -337,10 +337,10 @@ JNIEXPORT jint JNICALL Java_com_teskalabs_cvio_cviojni_jni_1run(JNIEnv * env, jc
 	uint16_t * buffer = fb;
 	for(int y=0; y<screenInfo.height; y+=1)
 	{
-    	for(int x=0; x<screenInfo.line_stride; x+=1)
-    	{
+		for(int x=0; x<screenInfo.line_stride; x+=1)
+		{
 			buffer[(y*screenInfo.line_stride)+x] = 0;
-   		}
+		}
 	}
 
 
@@ -506,7 +506,7 @@ JNIEXPORT jint JNICALL Java_com_teskalabs_cvio_cviojni_jni_1push_1pixels_1rgba_1
 			const uint16_t g = (s[si] >>  6) & 0x001F;
 			const uint16_t b = (s[si]      ) & 0x001F;
 
-    		const uint16_t p = (b << 10) | (g << 5) | r;
+			const uint16_t p = (b << 10) | (g << 5) | r;
 
 			if (t[tpos] == p) continue; // No update needed
 			t[tpos] = p;
