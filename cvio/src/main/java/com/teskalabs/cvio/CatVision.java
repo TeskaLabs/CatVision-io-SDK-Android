@@ -109,12 +109,12 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 
 		// API level compatibility check
 		if (android.os.Build.VERSION.SDK_INT < minAPILevel) {
-			throw new CatVisionNotSupportedException("Can't initialize CatVision. The minimum supported API level is 21.");
+			throw new CatVisionNotSupportedException("Can't initialize CatVision.io - The minimum supported API level is 21.");
 		}
 
 		APIKeyId = getApplicationMetaData(app.getApplicationContext(), "cvio.api_key_id");
 		if (APIKeyId == null) {
-			throw new MissingAPIKeyException("CatVision access key (cvio.api_key_id) not provided");
+			throw new MissingAPIKeyException("CatVision.io API key (cvio.api_key_id) not provided. See https://docs.catvision.io/get-started/api-key.html");
 		}
 
 		if (hasCustomId) {
@@ -301,6 +301,18 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 				} else {
 					if (sMediaProjection != null) {
 						sMediaProjection.stop();
+
+						try {
+							mHandler.post(new JSONMessageTrigger("cvio-capture-stopped") {
+								@Override
+								public void onPostExecute() {
+									Log.i(TAG, "Trigger 'cvio-capture-stopped' result:" + this.getResponseBody().toString());
+								}
+							}.put("ClientTag", CatVision.this.getClientTag()));
+						} catch (Exception e) {
+							Log.e(TAG, "Failed to trigger SeaCat event", e);
+						}
+
 					}
 				}
 			}
@@ -309,16 +321,6 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 		vncServer.shutdown();
 		stopRepeatingPing();
 
-		try {
-			mHandler.post(new JSONMessageTrigger("cvio-capture-stopped") {
-				@Override
-				public void onPostExecute() {
-					Log.i(TAG, "Trigger 'cvio-capture-stopped' result:" + this.getResponseBody().toString());
-				}
-			}.put("ClientTag", CatVision.this.getClientTag()));
-		} catch (Exception e) {
-			Log.e(TAG, "Failed to trigger SeaCat event", e);
-		}
 	}
 
 	public boolean isStarted() {
