@@ -39,6 +39,17 @@
             android:textColor="@color/Whiteish_BFC9DCFF"
             android:textSize="18sp" />
 
+        <TextView
+            android:id="@+id/status_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="bottom|center"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp"
+            android:text="@string/no_status"
+            android:textColor="@color/Whiteish_BFC9DCFF"
+            android:textSize="18sp"/>
+
         <Button
             android:id="@+id/test_area_btn"
             style="@style/Widget.AppCompat.Button.Borderless.Colored"

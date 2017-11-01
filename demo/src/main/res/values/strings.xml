@@ -2,5 +2,6 @@
     <string name="app_name">CatVision.io</string>
     <string name="app_label">CatVision.io</string>
     <string name="title_activity_test_area">Test Area</string>
-    <string name="no_client_tag"></string>
+    <string name="no_client_tag">-</string>
+    <string name="no_status">-?-</string>
 </resources>
