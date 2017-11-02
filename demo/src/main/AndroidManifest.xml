@@ -2,8 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.teskalabs.cvio.demo">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-
     <application
         android:name=".DemoApplication"
         android:allowBackup="true"
