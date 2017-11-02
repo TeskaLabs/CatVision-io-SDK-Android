@@ -333,13 +333,18 @@ JNIEXPORT jint JNICALL Java_com_teskalabs_cvio_cviojni_jni_1run(JNIEnv * env, jc
 	serverShutdown = 0;
 	imageReady = 0;
 
-	// Preset framebuffer with black color
+	// Preset framebuffer with CatVision.io blue color (#21323e)
+	const uint16_t r = 0x21 >> 3;
+	const uint16_t g = 0x32 >> 3;
+	const uint16_t b = 0x3e >> 3;
+	const uint16_t p = (b << 10) | (g << 5) | r;
+
 	uint16_t * buffer = fb;
 	for(int y=0; y<screenInfo.height; y+=1)
 	{
 		for(int x=0; x<screenInfo.line_stride; x+=1)
 		{
-			buffer[(y*screenInfo.line_stride)+x] = 0;
+			buffer[(y*screenInfo.line_stride)+x] = p;
 		}
 	}
 
