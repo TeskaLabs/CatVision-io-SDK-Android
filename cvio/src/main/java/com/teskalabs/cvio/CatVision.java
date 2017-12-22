@@ -353,9 +353,9 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 				mDisplay = activity.getWindowManager().getDefaultDisplay();
 
 				if (downscale == 0) {
-					if (mDensity < 150) {
+					if (mDensity < 280) {
 						downscale = 1;
-					} else if (mDensity < 300) {
+					} else if (mDensity < 400) {
 						downscale = 2;
 					} else {
 						downscale = 4;
