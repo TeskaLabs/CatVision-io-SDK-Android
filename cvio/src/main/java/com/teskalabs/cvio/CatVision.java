@@ -47,7 +47,7 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 	private static final String PREFS_CUSTOM_ID_KEY = "customId";
 	private static final String PREFS_NAME = "cvio.prefs";
 
-	private static double downscale = 0;
+	private double downscale = 0;
 
 	private MediaProjectionManager mProjectionManager = null;
 	private static MediaProjection sMediaProjection = null;
@@ -589,6 +589,13 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 			Log.e(TAG, "Failed to trigger SeaCat event", e);
 		}
 		return 0;
+	}
+
+	///
+
+	public void overrideDownscaleFactor(double value)
+	{
+		this.downscale = value;
 	}
 
 	/// Internal utility methods
