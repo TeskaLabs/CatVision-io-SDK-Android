@@ -358,7 +358,7 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 					} else if (mDensity < 400) {
 						downscale = 2;
 					} else {
-						downscale = 4;
+						downscale = 3;
 					}
 				}
 
