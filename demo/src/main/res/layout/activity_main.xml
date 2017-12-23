@@ -26,7 +26,7 @@
             android:layout_above="@+id/test_area_btn"
             android:layout_weight="1"
             android:textAlignment="center"
-            app:srcCompat="@drawable/catvision_logo" />
+            app:srcCompat="@drawable/catvision_logo_shadow" />
 
         <TextView
             android:id="@+id/client_tag_text"
