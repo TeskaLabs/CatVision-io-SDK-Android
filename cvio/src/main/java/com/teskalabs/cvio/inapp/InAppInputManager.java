@@ -2,6 +2,7 @@ package com.teskalabs.cvio.inapp;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -27,7 +28,22 @@ public class InAppInputManager implements Application.ActivityLifecycleCallbacks
 	private boolean button1Pressed = false;
 	private int metaState = 0; // State of the meta keys
 
-	public InAppInputManager(Application app) {
+	public InAppInputManager(Context context) {
+		Application app = null;
+		try {
+			 app = (Application) context;
+		}
+		catch (ClassCastException e)
+		{
+			app =  null;
+		}
+
+		if (app == null)
+		{
+			Log.e(TAG, "Provided context is not an application - input events will not work");
+			return;
+		}
+
 		app.registerActivityLifecycleCallbacks(this);
 	}
 

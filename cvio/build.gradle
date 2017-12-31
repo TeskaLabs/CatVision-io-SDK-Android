@@ -43,12 +43,12 @@ def getArchiveBaseName = { ->
 }
 
 android {
-    compileSdkVersion 25
+    compileSdkVersion 26
     buildToolsVersion "25.0.3"
 
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion 25
+        targetSdkVersion 26
         versionCode getVersionCode()
         versionName getVersionName()
         setProperty("archivesBaseName", getArchiveBaseName())

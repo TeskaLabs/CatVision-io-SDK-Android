@@ -29,8 +29,6 @@ import android.view.Display;
 import android.view.OrientationEventListener;
 
 import com.teskalabs.cvio.exceptions.CatVisionException;
-import com.teskalabs.cvio.exceptions.CatVisionNotSupportedException;
-import com.teskalabs.cvio.exceptions.MissingAPIKeyException;
 import com.teskalabs.cvio.inapp.InAppInputManager;
 import com.teskalabs.cvio.inapp.KeySym;
 
@@ -73,49 +71,70 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 	private int mMediaProjectionPixelFormat = PixelFormat.RGBA_8888;
 
 	static final int minAPILevel = Build.VERSION_CODES.LOLLIPOP;
+
 	///
 
-	static protected CatVision instance = null;
-
-	public static CatVision initialize(Application app) {
-		return initialize(app, false);
-	}
-
-	public synchronized static CatVision initialize(Application app, boolean hasCustomId) {
-
-		if (instance != null) return instance;
-
-		try {
-			instance = new CatVision(app, hasCustomId);
-		} catch (CatVisionNotSupportedException e) {
-			Log.d(TAG, "CatVision.io SDK requires Android API level 21 and higher.");
-			return null;
-		}catch (Exception e) {
-			return null;
-		}
-
-		return instance;
-	}
-
-	static public CatVision getInstance()
+	static private CatVision instance = null;
+	static public CatVision getInstance(Context context)
 	{
 		return instance;
 	}
 
+	//TODO: Remove after 06/2018
+	@Deprecated
+	static public CatVision getInstance()
+	{
+		Log.w(TAG, "CatVision.getInstance() is deprecated and will be removed, switch to CatVision.getInstance(context).");
+		return instance;
+	}
+
 	///
 
-	private CatVision(Application app, boolean hasCustomId) throws IOException, CatVisionException {
-		super(app.getApplicationContext());
+	//TODO: Remove after 06/2018
+	@Deprecated
+	public static CatVision initialize(Application app) {
+		return initialize(app, false);
+	}
+
+	//TODO: Remove after 06/2018
+	@Deprecated
+	public synchronized static CatVision initialize(Application app, boolean hasCustomId) {
+		Log.w(TAG, "CatVision.initialize() is deprecated and will be removed.");
+		return getInstance(app);
+	}
+
+	///
+
+	static synchronized boolean init(Context context)
+	{
+		if (instance != null) return true;
 
 		// API level compatibility check
 		if (android.os.Build.VERSION.SDK_INT < minAPILevel) {
-			throw new CatVisionNotSupportedException("Can't initialize CatVision.io - The minimum supported API level is 21.");
+			Log.w(TAG, "Can't initialize CatVision.io - The minimum supported API level is 21.");
+			return true;
 		}
 
-		APIKeyId = getApplicationMetaData(app.getApplicationContext(), "cvio.api_key_id");
+		String APIKeyId = getApplicationMetaData(context.getApplicationContext(), "cvio.api_key_id");
 		if (APIKeyId == null) {
-			throw new MissingAPIKeyException("CatVision.io API key (cvio.api_key_id) not provided. See https://docs.catvision.io/get-started/api-key.html");
+			Log.e(TAG, "CatVision.io API key (cvio.api_key_id) not provided. See https://docs.catvision.io/get-started/api-key.html");
+			return false;
 		}
+
+		try {
+			instance = new CatVision(context, APIKeyId, false);
+			return  true;
+		} catch (Exception e) {
+			Log.e(TAG, "Exception during CatVision.io SDK initialization, contact us at team@catvision.io");
+		}
+
+		return false;
+	}
+
+	private CatVision(Context context, String inAPIKeyId, boolean hasCustomId) throws IOException, CatVisionException {
+		super(context.getApplicationContext());
+
+		APIKeyId = inAPIKeyId;
 
 		if (hasCustomId) {
 			customId = null;
@@ -124,14 +143,14 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 		vncServer = new VNCServer(this, this);
 
 		SeaCatClient.setPackageName("com.teskalabs.cvio");
-		SeaCatClient.initialize(app.getApplicationContext(), new Runnable() {
+		SeaCatClient.initialize(context.getApplicationContext(), new Runnable() {
 			@Override
 			public void run() {
 				CatVision.this.submitCSR();
 			}
 		});
 
-		inputManager = new InAppInputManager(app);
+		inputManager = new InAppInputManager(context);
 
 		vncServer.configureSeaCat();
 	}

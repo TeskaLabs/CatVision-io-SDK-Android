@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         // Obtain the FirebaseAnalytics instance.
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
-		catvision = CatVision.getInstance();
+		catvision = CatVision.getInstance(this);
 		catvision.setCustomId(CatVision.DEFAULT_CUSTOM_ID);
 
         clientTagTextView = (TextView) findViewById(R.id.client_tag_text);
