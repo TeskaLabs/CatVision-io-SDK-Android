@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:tools="http://schemas.android.com/tools"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:icon="@android:drawable/ic_menu_info_details"
+        android:onClick="onMenuItemClickShowClientTag"
+        android:title="Show Client Tag"
+        app:showAsAction="ifRoom|ifRoom"/>
+
+    <item
+        android:icon="@android:drawable/ic_menu_delete"
+        android:onClick="onMenuItemClickResetIdentity"
+        android:title="Reset Identity"/>
+    <item
+        android:onClick="onMenuItemClickTestArea"
+        android:title="@string/title_activity_test_area"/>
+
+</menu>

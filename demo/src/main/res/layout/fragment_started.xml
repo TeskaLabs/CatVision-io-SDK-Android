@@ -1,0 +1,76 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:background="@color/colorPrimaryLight"
+             android:padding="8dp"
+             tools:context="com.teskalabs.cvio.demo.StartedFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/imageView"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp">
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:layout_weight="0"
+            android:text="You are sharing a screen."
+            android:textAlignment="center"
+            android:textAppearance="@android:style/TextAppearance.Material.Large.Inverse"/>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/floatingActionButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:clickable="true"
+            android:onClick="onClickSendLink"
+            app:backgroundTint="@color/colorGo"
+            app:fabSize="mini"
+            app:srcCompat="@android:drawable/ic_menu_share"/>
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:layout_weight="0"
+            android:text="Send a link to others\nso they could see your screen."
+            android:textAlignment="center"
+            android:textAppearance="@android:style/TextAppearance.Material.Medium.Inverse"/>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_weight="0"
+            android:backgroundTint="@color/Whiteish_BFC9DCFF"
+            android:onClick="onClickStopSharing"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:text="@string/stop_sharing"/>
+
+    </LinearLayout>
+
+
+</FrameLayout>
