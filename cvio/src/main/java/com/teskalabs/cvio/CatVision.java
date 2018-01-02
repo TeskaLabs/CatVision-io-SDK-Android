@@ -34,12 +34,35 @@ import com.teskalabs.cvio.inapp.KeySym;
 
 import com.teskalabs.seacat.android.client.CSR;
 import com.teskalabs.seacat.android.client.SeaCatClient;
+import com.teskalabs.seacat.android.client.SeaCatInternals;
 import com.teskalabs.seacat.android.client.message.JSONMessageTrigger;
 
 
 public class CatVision extends ContextWrapper implements VNCDelegate {
 
-	private static final String TAG = CatVision.class.getName();
+	/**
+	 * The <tt>Intent</tt> category for all Intents sent by CatVision.io SDK.
+	 *
+	 * <p>
+	 * Use it as a category filter in your IntentFilter:
+	 * <pre>
+	 * {@code
+	 * intentFilter.addCategory(SeaCatClient.CATEGORY_CVIO);
+	 * }
+	 * </pre>
+	 * </p>
+	 */
+	public final static String CATEGORY_CVIO = "com.teskalabs.cvio.intent.category.CVIO";
+
+	/**
+	 * The <tt>Intent</tt> action used to inform that CatVision.io SDK started sharing.
+	 */
+	public final static String ACTION_CVIO_SHARE_STARTED = "com.teskalabs.cvio.intent.action.ACTION_CVIO_SHARE_STARTED";
+
+	/**
+	 * The <tt>Intent</tt> action used to inform that CatVision.io SDK stopped sharing.
+	 */
+	public final static String ACTION_CVIO_SHARE_STOPPED = "com.teskalabs.cvio.intent.action.ACTION_CVIO_SHARE_STOPPED";
 
 	public static final String DEFAULT_CUSTOM_ID = "-DefaultCustomId-";
 	private static final String PREFS_CUSTOM_ID_KEY = "customId";
@@ -71,6 +94,8 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 	private int mMediaProjectionPixelFormat = PixelFormat.RGBA_8888;
 
 	static final int minAPILevel = Build.VERSION_CODES.LOLLIPOP;
+
+	private static final String TAG = CatVision.class.getName();
 
 	///
 
@@ -314,26 +339,27 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 		mHandler.post(new Runnable() {
 			@Override
 			public void run() {
-				if (android.os.Build.VERSION.SDK_INT < minAPILevel) {
-					Log.w(TAG, "Can't run shutdown() due to a low API level. API level 21 or higher is required.");
-					return;
-				} else {
-					if (sMediaProjection != null) {
-						sMediaProjection.stop();
+			if (android.os.Build.VERSION.SDK_INT < minAPILevel) {
+				Log.w(TAG, "Can't run shutdown() due to a low API level. API level 21 or higher is required.");
+			} else {
+				if (sMediaProjection != null) {
+					sMediaProjection.stop();
 
-						try {
-							mHandler.post(new JSONMessageTrigger("cvio-capture-stopped") {
-								@Override
-								public void onPostExecute() {
-									Log.i(TAG, "Trigger 'cvio-capture-stopped' result:" + this.getResponseBody().toString());
-								}
-							}.put("ClientTag", CatVision.this.getClientTag()));
-						} catch (Exception e) {
-							Log.e(TAG, "Failed to trigger SeaCat event", e);
-						}
-
+					try {
+						mHandler.post(new JSONMessageTrigger("cvio-capture-stopped") {
+							@Override
+							public void onPostExecute() {
+								Log.i(TAG, "Trigger 'cvio-capture-stopped' result:" + this.getResponseBody().toString());
+							}
+						}.put("ClientTag", CatVision.this.getClientTag()));
+					} catch (Exception e) {
+						Log.e(TAG, "Failed to trigger SeaCat event", e);
 					}
+
 				}
+			}
+
+			CatVision.this.sendBroadcast(CVIOInternals.createIntent(ACTION_CVIO_SHARE_STOPPED));
 			}
 		});
 
@@ -392,6 +418,8 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 
 				// register media projection shutdown callback
 				sMediaProjection.registerCallback(new MediaProjectionStopCallback(), mHandler);
+
+				this.sendBroadcast(CVIOInternals.createIntent(ACTION_CVIO_SHARE_STARTED));
 			}
 		}
 	}
