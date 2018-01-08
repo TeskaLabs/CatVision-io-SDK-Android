@@ -78,3 +78,10 @@ Use Android Studio: `Build->Clean Project`, `Build->Make Project`
 The **CatVision AAR** is now in `$BASEDIR/cvio/build/outputs/aar`
 
 TODO: build from command line
+
+### Sign CatVision.IO AAR
+
+```
+$ apksigner sign --ks truststore.ks --out catvision-io-sdk-android-v1801.aar --min-sdk-version 14 catvision-io-sdk-android-v1801-release-aligned.aar
+```
+
