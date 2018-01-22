@@ -1,17 +1,21 @@
 package com.teskalabs.cvio.demo;
 
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -177,6 +181,35 @@ public class MainActivity extends AppCompatActivity implements StoppedFragment.O
 	public boolean onMenuItemClickTestArea(MenuItem v) {
 		Intent intent = new Intent(getApplicationContext(), TestAreaActivity.class);
 		startActivity(intent);
+		return true;
+	}
+
+	public boolean onMenuItemClickOverrideApiKeyId(MenuItem v) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle("Enter new Api Key id");
+
+		// Set up the input
+		final EditText input = new EditText(this);
+
+		// Specify the type of input expected
+		input.setInputType(InputType.TYPE_CLASS_TEXT);
+		builder.setView(input);
+
+		// Set up the buttons
+		builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				String ApiKeyId = input.getText().toString();
+				CatVision.resetWithAPIKeyId(MainActivity.this, ApiKeyId);
+			}
+		});
+		builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.cancel();
+			}
+		});
+		builder.show();
 		return true;
 	}
 

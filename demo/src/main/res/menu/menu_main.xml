@@ -13,6 +13,11 @@
         android:icon="@android:drawable/ic_menu_delete"
         android:onClick="onMenuItemClickResetIdentity"
         android:title="Reset Identity"/>
+
+    <item
+        android:onClick="onMenuItemClickOverrideApiKeyId"
+        android:title="Override Api Key Id"/>
+
     <item
         android:onClick="onMenuItemClickTestArea"
         android:title="@string/title_activity_test_area"/>
