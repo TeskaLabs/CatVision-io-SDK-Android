@@ -66,6 +66,7 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 
 	public static final String DEFAULT_CUSTOM_ID = "-DefaultCustomId-";
 	private static final String PREFS_CUSTOM_ID_KEY = "customId";
+	private static final String PREFS_API_KEY_ID_KEY = "apiKeyId";
 	private static final String PREFS_NAME = "cvio.prefs";
 
 	private double downscale = 0;
@@ -88,7 +89,6 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 	private final VNCServer vncServer;
 	private final InAppInputManager inputManager;
 
-	private final String APIKeyId;
 	private String customId = DEFAULT_CUSTOM_ID;
 
 	private int mMediaProjectionPixelFormat = PixelFormat.RGBA_8888;
@@ -140,14 +140,14 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 			return true;
 		}
 
-		String APIKeyId = getApplicationMetaData(context.getApplicationContext(), "cvio.api_key_id");
+		String APIKeyId = getAPIKeyId(context.getApplicationContext());
 		if (APIKeyId == null) {
 			Log.e(TAG, "CatVision.io API key (cvio.api_key_id) not provided. See https://docs.catvision.io/get-started/api-key.html");
 			return false;
 		}
 
 		try {
-			instance = new CatVision(context, APIKeyId, false);
+			instance = new CatVision(context, false);
 			return  true;
 		} catch (Exception e) {
 			Log.e(TAG, "Exception during CatVision.io SDK initialization, contact us at team@catvision.io");
@@ -156,10 +156,8 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 		return false;
 	}
 
-	private CatVision(Context context, String inAPIKeyId, boolean hasCustomId) throws IOException, CatVisionException {
+	private CatVision(Context context, boolean hasCustomId) throws IOException, CatVisionException {
 		super(context.getApplicationContext());
-
-		APIKeyId = inAPIKeyId;
 
 		if (hasCustomId) {
 			customId = null;
@@ -197,6 +195,13 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 
 		CSR csr = new CSR();
 		csr.setOrganization(getPackageName());
+
+		String APIKeyId = getAPIKeyId(getApplicationContext());
+		if (APIKeyId == null) {
+			Log.e(TAG, "CatVision.io API key (cvio.api_key_id) not provided. See https://docs.catvision.io/get-started/api-key.html");
+			return;
+		}
+
 		csr.setOrganizationUnit(APIKeyId);
 
 		if (customId != DEFAULT_CUSTOM_ID)
@@ -647,11 +652,38 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 
 	/// Internal utility methods
 
-	private static String getApplicationMetaData(Context context, String name) {
+	public static void resetWithAPIKeyId(Context context, String ApiKeyId) {
+		SharedPreferences settings = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = settings.edit();
+		if (ApiKeyId != null)
+		{
+			editor.putString(PREFS_API_KEY_ID_KEY, ApiKeyId);
+		}
+		else
+		{
+			editor.remove(PREFS_API_KEY_ID_KEY);
+		}
+		editor.apply();
+
+		if (instance != null)
+		{
+			try {
+				instance.reset();
+			} catch (IOException e) {
+				Log.e(TAG, "Reset identity", e);
+			}
+		}
+	}
+
+	private static String getAPIKeyId(Context context) {
+		SharedPreferences settings = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+		String ApiKeyId = settings.getString(PREFS_API_KEY_ID_KEY, null);
+		if (ApiKeyId != null) return ApiKeyId;
+
 		try {
 			ApplicationInfo ai = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
 			Bundle bundle = ai.metaData;
-			return bundle.getString(name);
+			return bundle.getString("cvio.api_key_id");
 		} catch (PackageManager.NameNotFoundException|NullPointerException e) {
 			Log.e(TAG, "Unable to load application meta-data: " + e.getMessage());
 		}
