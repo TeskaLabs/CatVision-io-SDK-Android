@@ -9,6 +9,7 @@
     <string name="stop_sharing">Stop sharing</string>
     <string name="title_activity_started">StartedActivity</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!-- QR scan related -->
+    <string name="qr_scan">Scan QR code</string>
+    <string name="title_activity_qrcode_scanner">QR code scanner</string>
 </resources>

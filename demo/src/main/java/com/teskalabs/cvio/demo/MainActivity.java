@@ -1,16 +1,24 @@
 package com.teskalabs.cvio.demo;
 
+import android.*;
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
+
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -29,8 +37,11 @@ public class MainActivity extends AppCompatActivity implements StoppedFragment.O
 	private BroadcastReceiver receiver;
 	private FirebaseAnalytics mFirebaseAnalytics;
 	private CatVision catvision;
-
+	// Permissions
+	private static int CAMERA_PERMISSION = 201;
+	// Requests
 	private int CATVISION_REQUEST_CODE = 100;
+	private static int QR_CODE_REQUEST = 101;
 	private static final String TAG = MainActivity.class.getName();
 
 
@@ -98,6 +109,13 @@ public class MainActivity extends AppCompatActivity implements StoppedFragment.O
 			}
 			}
 		};
+
+		// Deep linking
+		Uri data = this.getIntent().getData();
+		if (data != null && data.isHierarchical()) {
+			String apikey = data.getQueryParameter("apikey");
+			setApiKeyId(apikey);
+		}
 	}
 
 	@Override
@@ -137,6 +155,14 @@ public class MainActivity extends AppCompatActivity implements StoppedFragment.O
 			bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "menu_item");
 			mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
 
+		} else if (requestCode == QR_CODE_REQUEST) {
+			if (resultCode == RESULT_OK) {
+				// Setting a new API key from the scan
+				String apikey_id = data.getStringExtra("apikey_id");
+				if (apikey_id != null) {
+					setApiKeyId(apikey_id);
+				}
+			}
 		}
 	}
 
@@ -181,6 +207,12 @@ public class MainActivity extends AppCompatActivity implements StoppedFragment.O
 	public boolean onMenuItemClickTestArea(MenuItem v) {
 		Intent intent = new Intent(getApplicationContext(), TestAreaActivity.class);
 		startActivity(intent);
+		return true;
+	}
+
+	public boolean onMenuItemClickQRCodeScan(MenuItem v) {
+		if (isCameraPermissionGranted())
+			startQRScanActivity();
 		return true;
 	}
 
@@ -238,4 +270,55 @@ public class MainActivity extends AppCompatActivity implements StoppedFragment.O
 	public void onFragmentInteractionStopRequest() {
 	}
 
+	// Custom methods ------------------------------------------------------------------------------
+	/**
+	 * Sets the API key to CatVision.
+	 * @param apiKeyId String
+	 */
+	public void setApiKeyId(String apiKeyId) {
+		CatVision.resetWithAPIKeyId(MainActivity.this, apiKeyId);
+	}
+
+	/**
+	 * Starts an activity that retrieves the QR code.
+	 */
+	public void startQRScanActivity() {
+		Intent intent = new Intent(getApplicationContext(), QRCodeScannerActivity.class);
+		startActivityForResult(intent, QR_CODE_REQUEST);
+	}
+
+	// Permissions ---------------------------------------------------------------------------------
+	/**
+	 * Checks if it is allowed to use the camera.
+	 * @return boolean
+	 */
+	public  boolean isCameraPermissionGranted() {
+		if (Build.VERSION.SDK_INT >= 23) {
+			if (checkSelfPermission(android.Manifest.permission.CAMERA)
+					== PackageManager.PERMISSION_GRANTED) {
+				return true;
+			} else {
+				ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION);
+				return false;
+			}
+		} else {
+			return true;
+		}
+	}
+
+	/**
+	 * Continues after the permission is obtained.
+	 * @param requestCode int
+	 * @param permissions @NonNull String[]
+	 * @param grantResults @NonNull int[]
+	 */
+	@Override
+	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+		super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+		if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+			if (requestCode == CAMERA_PERMISSION) {
+				startQRScanActivity();
+			}
+		}
+	}
 }

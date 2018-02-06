@@ -2,32 +2,47 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.teskalabs.cvio.demo">
 
+    <uses-permission android:name="android.permission.CAMERA"/>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-        <meta-data android:name="cvio.api_key_id" android:value="G9F1URT/NREYrXO7SKYYdg" />
+        <meta-data
+            android:name="cvio.api_key_id"
+            android:value="G9F1URT/NREYrXO7SKYYdg"/>
 
         <activity
             android:name=".MainActivity"
             android:label="@string/app_label">
-            <intent-filter
-                android:label="@string/app_name">
+            <intent-filter android:label="@string/app_name">
                 <action android:name="android.intent.action.MAIN"/>
+
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-        </activity>
 
+            <intent-filter android:label="@string/app_name">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="apikey"
+                      android:host="catvision" />
+            </intent-filter>
+
+        </activity>
         <activity
             android:name=".TestAreaActivity"
             android:label="@string/title_activity_test_area"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
-
+        <activity
+            android:name=".QRCodeScannerActivity"
+            android:label="@string/title_activity_qrcode_scanner"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
     </application>
 
 </manifest>
