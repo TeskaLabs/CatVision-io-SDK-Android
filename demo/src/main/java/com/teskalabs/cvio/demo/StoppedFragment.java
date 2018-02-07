@@ -3,9 +3,11 @@ package com.teskalabs.cvio.demo;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 
 /**
@@ -63,7 +65,10 @@ public class StoppedFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 							 Bundle savedInstanceState) {
 		// Inflate the layout for this fragment
-		return inflater.inflate(R.layout.fragment_stopped, container, false);
+		View view = inflater.inflate(R.layout.fragment_stopped, container, false);
+		// Checking if the API key is present
+		refreshApiKeyRelatedView(view);
+		return view;
 	}
 
 	public void onClick(View v) {
@@ -101,5 +106,32 @@ public class StoppedFragment extends Fragment {
 	 */
 	public interface OnFragmentInteractionListener {
 		void onFragmentInteractionStartRequest();
+	}
+
+	// Custom methods ------------------------------------------------------------------------------
+
+	/**
+	 * Refreshes all elements related to the Api Key ID.
+	 * @param view View
+	 */
+	public void refreshApiKeyRelatedView(View view) {
+		if (view == null)
+			view = getView();
+		Log.e("AAA", "aaa");
+		try {
+			MainActivity mainActivity = (MainActivity) getActivity();
+			String api_key = mainActivity.getPreferenceString(MainActivity.SAVED_API_KEY_ID);
+			// Views
+			Button buttonStart = (Button)view.findViewById(R.id.button2);
+			if (api_key != null) {
+				// Change the label of the button
+				buttonStart.setText(getResources().getString(R.string.start_sharing));
+			} else {
+				// Change the label of the button
+				buttonStart.setText(getResources().getString(R.string.start_connecting));
+			}
+		} catch (NullPointerException e) {
+			e.printStackTrace();
+		}
 	}
 }

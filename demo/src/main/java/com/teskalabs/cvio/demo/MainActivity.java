@@ -1,24 +1,22 @@
 package com.teskalabs.cvio.demo;
 
 import android.*;
-import android.Manifest;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
+import android.content.SharedPreferences;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -37,12 +35,12 @@ public class MainActivity extends AppCompatActivity implements StoppedFragment.O
 	private BroadcastReceiver receiver;
 	private FirebaseAnalytics mFirebaseAnalytics;
 	private CatVision catvision;
-	// Permissions
-	private static int CAMERA_PERMISSION = 201;
 	// Requests
 	private int CATVISION_REQUEST_CODE = 100;
-	private static int QR_CODE_REQUEST = 101;
+	private int API_KEY_OBTAINER_REQUEST = 101;
 	private static final String TAG = MainActivity.class.getName();
+	// Preferences
+	public static String SAVED_API_KEY_ID = "SAVED_API_KEY_ID";
 
 
 	// Activity Lifecycle methods ------------------------------------------------------------------
@@ -64,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements StoppedFragment.O
 				firstFragment.setArguments(getIntent().getExtras());
 
 				getSupportFragmentManager().beginTransaction()
-					.add(R.id.fragment_container, firstFragment)
+					.add(R.id.fragment_container, firstFragment, StoppedFragment.class.toString())
 					.commit();
 			}
 		}
@@ -92,7 +90,7 @@ public class MainActivity extends AppCompatActivity implements StoppedFragment.O
 					Fragment newFragment = new StartedFragment();
 					FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 					ft.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left);
-					ft.replace(R.id.fragment_container, newFragment);
+					ft.replace(R.id.fragment_container, newFragment, StartedFragment.class.toString());
 					ft.commit();
 
 					return;
@@ -101,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements StoppedFragment.O
 
 					FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 					ft.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
-					ft.replace(R.id.fragment_container, newFragment);
+					ft.replace(R.id.fragment_container, newFragment, StoppedFragment.class.toString());
 					ft.commit();
 
 					return;
@@ -113,8 +111,23 @@ public class MainActivity extends AppCompatActivity implements StoppedFragment.O
 		// Deep linking
 		Uri data = this.getIntent().getData();
 		if (data != null && data.isHierarchical()) {
+			// Setting the API key
 			String apikey = data.getQueryParameter("apikey");
 			setApiKeyId(apikey);
+			// Showing a dialog
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setTitle(getResources().getString(R.string.app_name));
+			builder.setMessage(getResources().getString(R.string.dl_dialog_message));
+			builder.setCancelable(true);
+			builder.setPositiveButton(
+					getResources().getString(R.string.dialog_button_ok),
+					new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int id) {
+							dialog.cancel();
+						}
+					});
+			AlertDialog alert = builder.create();
+			alert.show();
 		}
 	}
 
@@ -155,7 +168,7 @@ public class MainActivity extends AppCompatActivity implements StoppedFragment.O
 			bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "menu_item");
 			mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
 
-		} else if (requestCode == QR_CODE_REQUEST) {
+		} else if (requestCode == API_KEY_OBTAINER_REQUEST) {
 			if (resultCode == RESULT_OK) {
 				// Setting a new API key from the scan
 				String apikey_id = data.getStringExtra("apikey_id");
@@ -174,13 +187,12 @@ public class MainActivity extends AppCompatActivity implements StoppedFragment.O
 									dialog.cancel();
 								}
 							});
-					AlertDialog alert1 = builder.create();
-					alert1.show();
+					AlertDialog alert = builder.create();
+					alert.show();
 				}
 			}
 		}
 	}
-
 
 	private void shareTextUrl() {
 		Intent share = new Intent(android.content.Intent.ACTION_SEND);
@@ -212,6 +224,10 @@ public class MainActivity extends AppCompatActivity implements StoppedFragment.O
 	public boolean onMenuItemClickResetIdentity(MenuItem v) {
 		try {
 			SeaCatClient.reset();
+			// Save also in this context
+			savePreferenceString(SAVED_API_KEY_ID, null);
+			refreshFragments();
+			// Toast
 			Toast.makeText(this, "Client identity reset.", Toast.LENGTH_LONG).show();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -222,12 +238,6 @@ public class MainActivity extends AppCompatActivity implements StoppedFragment.O
 	public boolean onMenuItemClickTestArea(MenuItem v) {
 		Intent intent = new Intent(getApplicationContext(), TestAreaActivity.class);
 		startActivity(intent);
-		return true;
-	}
-
-	public boolean onMenuItemClickQRCodeScan(MenuItem v) {
-		if (isCameraPermissionGranted())
-			startQRScanActivity();
 		return true;
 	}
 
@@ -262,9 +272,13 @@ public class MainActivity extends AppCompatActivity implements StoppedFragment.O
 
 
 	// ---------------------------------------------------------------------------------------------
-
 	public void onClickStartSharing(View v) {
-		catvision.requestStart(this, CATVISION_REQUEST_CODE);
+		String api_key = getPreferenceString(SAVED_API_KEY_ID);
+		if (api_key != null) {
+			catvision.requestStart(this, CATVISION_REQUEST_CODE);
+		} else {
+			startQRScanActivity();
+		}
 	}
 
 	public void onClickStopSharing(View v) {
@@ -292,48 +306,49 @@ public class MainActivity extends AppCompatActivity implements StoppedFragment.O
 	 */
 	public void setApiKeyId(String apiKeyId) {
 		CatVision.resetWithAPIKeyId(MainActivity.this, apiKeyId);
+		// Save also in this context
+		savePreferenceString(SAVED_API_KEY_ID, apiKeyId);
+		refreshFragments();
 	}
 
 	/**
-	 * Starts an activity that retrieves the QR code.
+	 * Refreshes fragments when some important value changes.
+	 */
+	public void refreshFragments() {
+		// Refresh fragments
+		StoppedFragment fragmentStopped = (StoppedFragment)getSupportFragmentManager().findFragmentByTag(StoppedFragment.class.toString());
+		if (fragmentStopped != null) {
+			fragmentStopped.refreshApiKeyRelatedView(null);
+		}
+	}
+
+	/**
+	 * Starts an activity that retrieves the Api Key ID.
 	 */
 	public void startQRScanActivity() {
-		Intent intent = new Intent(getApplicationContext(), QRCodeScannerActivity.class);
-		startActivityForResult(intent, QR_CODE_REQUEST);
-	}
-
-	// Permissions ---------------------------------------------------------------------------------
-	/**
-	 * Checks if it is allowed to use the camera.
-	 * @return boolean
-	 */
-	public  boolean isCameraPermissionGranted() {
-		if (Build.VERSION.SDK_INT >= 23) {
-			if (checkSelfPermission(android.Manifest.permission.CAMERA)
-					== PackageManager.PERMISSION_GRANTED) {
-				return true;
-			} else {
-				ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION);
-				return false;
-			}
-		} else {
-			return true;
-		}
+		Intent intent = new Intent(getApplicationContext(), ApiKeyObtainerActivity.class);
+		startActivityForResult(intent, API_KEY_OBTAINER_REQUEST);
 	}
 
 	/**
-	 * Continues after the permission is obtained.
-	 * @param requestCode int
-	 * @param permissions @NonNull String[]
-	 * @param grantResults @NonNull int[]
+	 * Getting a string from shared preferences.
+	 * @param name String
+	 * @return String
 	 */
-	@Override
-	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-		super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-		if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-			if (requestCode == CAMERA_PERMISSION) {
-				startQRScanActivity();
-			}
-		}
+	public String getPreferenceString(String name) {
+		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+		return settings.getString(name, null);
 	}
+
+	/**
+	 * Setting a string to shared preferences.
+	 * @param name String
+	 * @param value String
+	 */
+	public void savePreferenceString(String name, String value) {
+		SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+		editor.putString(name, value);
+		editor.apply();
+	}
+
 }

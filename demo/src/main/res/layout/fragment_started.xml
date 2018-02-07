@@ -32,6 +32,7 @@
             android:textAlignment="center"
             android:textAppearance="@android:style/TextAppearance.Material.Large.Inverse"/>
 
+        <!--
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/floatingActionButton"
             android:layout_width="match_parent"
@@ -52,7 +53,7 @@
             android:text="Send a link to others\nso they could see your screen."
             android:textAlignment="center"
             android:textAppearance="@android:style/TextAppearance.Material.Medium.Inverse"/>
-
+        -->
         <Space
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -69,6 +70,11 @@
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:text="@string/stop_sharing"/>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
 
     </LinearLayout>
 

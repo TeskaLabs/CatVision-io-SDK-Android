@@ -23,15 +23,19 @@
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+            <intent-filter
+                android:autoVerify="true"
+                android:label="@string/app_name">
+                <action android:name="android.intent.action.VIEW"/>
 
-            <intent-filter android:label="@string/app_name">
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="cvio"
-                      android:host="demo" />
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+
+                <data
+                    android:host="www.catvision.io"
+                    android:pathPrefix="/get-app-android"
+                    android:scheme="https"/>
             </intent-filter>
-
         </activity>
         <activity
             android:name=".TestAreaActivity"
@@ -41,6 +45,11 @@
         <activity
             android:name=".QRCodeScannerActivity"
             android:label="@string/title_activity_qrcode_scanner"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity
+            android:name=".ApiKeyObtainerActivity"
+            android:label="@string/title_activity_api_key_obtainer"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
     </application>

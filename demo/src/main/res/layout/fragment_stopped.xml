@@ -34,7 +34,7 @@
         <Space
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="2"/>
+            android:layout_weight="1"/>
 
         <Button
             android:id="@+id/button2"
@@ -46,8 +46,13 @@
             android:onClick="onClickStartSharing"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
-            android:text="@string/start_sharing"
+            android:text="@string/start_connecting"
             android:textColor="@android:color/white"/>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
 
     </LinearLayout>
 

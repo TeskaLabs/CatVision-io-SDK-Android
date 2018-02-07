@@ -15,11 +15,6 @@
         android:title="Reset Identity"/>
 
     <item
-        android:icon="@android:drawable/ic_menu_camera"
-        android:onClick="onMenuItemClickQRCodeScan"
-        android:title="@string/qr_scan"/>
-
-    <item
         android:onClick="onMenuItemClickOverrideApiKeyId"
         android:title="Override Api Key Id"/>
 
