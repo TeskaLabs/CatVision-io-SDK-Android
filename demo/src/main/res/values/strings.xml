@@ -9,7 +9,11 @@
     <string name="stop_sharing">Stop sharing</string>
     <string name="title_activity_started">StartedActivity</string>
 
+    <!-- General -->
+    <string name="dialog_button_ok">OK</string>
+
     <!-- QR scan related -->
     <string name="qr_scan">Scan QR code</string>
+    <string name="qr_dialog_message">The API Key ID was successfully scanned.</string>
     <string name="title_activity_qrcode_scanner">QR code scanner</string>
 </resources>

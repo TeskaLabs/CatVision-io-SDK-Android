@@ -160,7 +160,22 @@ public class MainActivity extends AppCompatActivity implements StoppedFragment.O
 				// Setting a new API key from the scan
 				String apikey_id = data.getStringExtra("apikey_id");
 				if (apikey_id != null) {
+					// Setting the API key
 					setApiKeyId(apikey_id);
+					// Showing a dialog
+					AlertDialog.Builder builder = new AlertDialog.Builder(this);
+					builder.setTitle(getResources().getString(R.string.app_name));
+					builder.setMessage(getResources().getString(R.string.qr_dialog_message));
+					builder.setCancelable(true);
+					builder.setPositiveButton(
+							getResources().getString(R.string.dialog_button_ok),
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog, int id) {
+									dialog.cancel();
+								}
+							});
+					AlertDialog alert1 = builder.create();
+					alert1.show();
 				}
 			}
 		}
