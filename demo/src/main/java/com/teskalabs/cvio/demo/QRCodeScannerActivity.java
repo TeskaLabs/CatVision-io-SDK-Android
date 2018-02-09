@@ -2,6 +2,7 @@ package com.teskalabs.cvio.demo;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import com.google.zxing.Result;
 
@@ -35,12 +36,20 @@ public class QRCodeScannerActivity extends Activity implements ZXingScannerView.
 	public void handleResult(Result rawResult) {
 		String format = rawResult.getBarcodeFormat().toString();
 		if (format.equals("QR_CODE")) {
-			// Returning result
-			Intent result = new Intent();
-			result.putExtra("apikey_id", rawResult.getText());
-			result.putExtra("format", format);
-			setResult(Activity.RESULT_OK, result);
-			finish();
+			try {
+				// Reading the API key ID
+				Uri uri = Uri.parse(rawResult.getText());
+				String apikey = uri.getQueryParameter("apikey").replace(" ", "+");
+				// Returning result
+				Intent result = new Intent();
+				result.putExtra("apikey_id", apikey);
+				result.putExtra("format", format);
+				setResult(Activity.RESULT_OK, result);
+				finish();
+			} catch (Exception e) {
+				e.printStackTrace();
+				mScannerView.resumeCameraPreview(this);
+			}
 		} else {
 			// If you would like to resume scanning, call this method below:
 			mScannerView.resumeCameraPreview(this);

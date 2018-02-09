@@ -16,7 +16,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -112,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements StoppedFragment.O
 		Uri data = this.getIntent().getData();
 		if (data != null && data.isHierarchical()) {
 			// Setting the API key
-			String apikey = data.getQueryParameter("apikey");
+			String apikey = data.getQueryParameter("apikey").replace(" ", "+");
 			setApiKeyId(apikey);
 			// Showing a dialog
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);

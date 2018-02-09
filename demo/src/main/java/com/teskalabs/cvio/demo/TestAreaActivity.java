@@ -18,7 +18,6 @@ public class TestAreaActivity extends AppCompatActivity {
 	private static final String TAG = TestAreaActivity.class.getName();
 
 	private ImageView clickMark;
-	private FirebaseAnalytics mFirebaseAnalytics;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -33,9 +32,6 @@ public class TestAreaActivity extends AppCompatActivity {
 		} catch (NullPointerException e) {
 			e.printStackTrace();
 		}
-
-		// Obtain the FirebaseAnalytics instance.
-		mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
 		FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 		fab.setOnClickListener(new View.OnClickListener() {
