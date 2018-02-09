@@ -216,8 +216,12 @@ public class MainActivity extends AppCompatActivity implements StoppedFragment.O
 	}
 
 	public boolean onMenuItemClickShowClientTag(MenuItem v) {
+		// Getting the client tag
 		String clientTag = catvision.getClientTag();
-		Toast.makeText(this, "Client tag: "+ clientTag, Toast.LENGTH_LONG).show();
+		// Starting the InfoActivity
+		Intent intent = new Intent(getApplicationContext(), InfoActivity.class);
+		intent.putExtra("client_tag", "Client tag: "+ clientTag);
+		startActivity(intent);
 		return true;
 	}
 
@@ -351,4 +355,9 @@ public class MainActivity extends AppCompatActivity implements StoppedFragment.O
 		editor.apply();
 	}
 
+	@Override
+	public boolean onSupportNavigateUp() {
+		onBackPressed();
+		return true;
+	}
 }

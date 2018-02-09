@@ -27,6 +27,13 @@ public class TestAreaActivity extends AppCompatActivity {
 		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 
+		try {
+			getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+			getSupportActionBar().setDisplayShowHomeEnabled(true);
+		} catch (NullPointerException e) {
+			e.printStackTrace();
+		}
+
 		// Obtain the FirebaseAnalytics instance.
 		mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
@@ -98,4 +105,9 @@ public class TestAreaActivity extends AppCompatActivity {
 		return super.onKeyDown(keyCode, event);
 	}
 
+	@Override
+	public boolean onSupportNavigateUp() {
+		onBackPressed();
+		return true;
+	}
 }

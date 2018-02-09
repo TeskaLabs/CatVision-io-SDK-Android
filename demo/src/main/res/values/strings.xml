@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">CatVision.io</string>
     <string name="app_label">CatVision.io</string>
+    <string name="app_header">DEMO APP</string>
     <string name="title_activity_test_area">Test Area</string>
     <string name="no_client_tag">-</string>
     <string name="no_status">-?-</string>
@@ -8,11 +9,21 @@
     <string name="start_connecting">Connect me</string>
     <string name="start_sharing">Share me</string>
     <string name="stop_sharing">Stop sharing</string>
-    <string name="title_activity_started">StartedActivity</string>
+    <string name="title_activity_started">Started</string>
+    <string name="title_activity_info">Info</string>
+
+    <!-- Menu -->
+    <string name="menu_show_tag">Info</string>
+    <string name="menu_test_area">Test Area</string>
+    <string name="menu_override">New API Key ID</string>
+    <string name="menu_reset">Reset connection</string>
 
     <!-- General -->
     <string name="dialog_button_ok">OK</string>
     <string name="title_activity_api_key_obtainer">Connect me</string>
+
+    <!-- Started sharing -->
+    <string name="started_sharing_text">Screen sharing is active</string>
 
     <!-- QR scan related -->
     <string name="qr_scan">Scan QR code</string>
@@ -20,7 +31,7 @@
     <string name="title_activity_qrcode_scanner">QR code scanner</string>
 
     <!-- Deep-link related -->
-    <string name="dl_open">Deep link</string>
+    <string name="dl_open">via browser</string>
     <string name="dl_dialog_message">Connection established.</string>
 
 </resources>

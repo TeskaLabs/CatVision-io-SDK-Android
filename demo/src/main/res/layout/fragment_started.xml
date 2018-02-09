@@ -28,7 +28,8 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
             android:layout_weight="0"
-            android:text="You are sharing a screen."
+            android:textAllCaps="true"
+            android:text="@string/started_sharing_text"
             android:textAlignment="center"
             android:textAppearance="@android:style/TextAppearance.Material.Large.Inverse"/>
 
@@ -60,6 +61,8 @@
             android:layout_weight="1"/>
 
         <Button
+            android:textSize="20sp"
+            android:padding="20dp"
             android:id="@+id/button2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

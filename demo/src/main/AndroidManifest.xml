@@ -52,6 +52,11 @@
             android:label="@string/title_activity_api_key_obtainer"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
+        <activity
+            android:name=".InfoActivity"
+            android:label="@string/title_activity_info"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
     </application>
 
 </manifest>

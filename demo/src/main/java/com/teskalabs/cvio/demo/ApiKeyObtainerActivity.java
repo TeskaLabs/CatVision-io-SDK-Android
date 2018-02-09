@@ -25,6 +25,13 @@ public class ApiKeyObtainerActivity extends AppCompatActivity {
 		setContentView(R.layout.activity_api_key_obtainer);
 		Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
+
+		try {
+			getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+			getSupportActionBar().setDisplayShowHomeEnabled(true);
+		} catch (NullPointerException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -118,6 +125,12 @@ public class ApiKeyObtainerActivity extends AppCompatActivity {
 	}
 
 	public boolean onMenuItemClickOverrideApiKeyId(MenuItem v) {
+		return true;
+	}
+
+	@Override
+	public boolean onSupportNavigateUp() {
+		onBackPressed();
 		return true;
 	}
 }

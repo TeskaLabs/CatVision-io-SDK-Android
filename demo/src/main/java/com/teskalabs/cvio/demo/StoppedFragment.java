@@ -117,7 +117,6 @@ public class StoppedFragment extends Fragment {
 	public void refreshApiKeyRelatedView(View view) {
 		if (view == null)
 			view = getView();
-		Log.e("AAA", "aaa");
 		try {
 			MainActivity mainActivity = (MainActivity) getActivity();
 			String api_key = mainActivity.getPreferenceString(MainActivity.SAVED_API_KEY_ID);

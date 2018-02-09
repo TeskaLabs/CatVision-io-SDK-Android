@@ -6,20 +6,19 @@
     <item
         android:icon="@android:drawable/ic_menu_info_details"
         android:onClick="onMenuItemClickShowClientTag"
-        android:title="Show Client Tag"
-        app:showAsAction="ifRoom|ifRoom"/>
+        android:title="@string/menu_show_tag" />
+
+    <item
+        android:onClick="onMenuItemClickOverrideApiKeyId"
+        android:title="@string/menu_override"/>
+
+    <item
+        android:onClick="onMenuItemClickTestArea"
+        android:title="@string/menu_test_area"/>
 
     <item
         android:icon="@android:drawable/ic_menu_delete"
         android:onClick="onMenuItemClickResetIdentity"
-        android:title="Reset Identity"/>
-
-    <item
-        android:onClick="onMenuItemClickOverrideApiKeyId"
-        android:title="Override Api Key Id"/>
-
-    <item
-        android:onClick="onMenuItemClickTestArea"
-        android:title="@string/title_activity_test_area"/>
+        android:title="@string/menu_reset"/>
 
 </menu>
