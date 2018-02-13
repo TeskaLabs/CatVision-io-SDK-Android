@@ -24,7 +24,7 @@ import android.widget.Toast;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.teskalabs.cvio.CatVision;
-import com.teskalabs.cvio.demo.R;
+import io.catvision.app.R;
 import com.teskalabs.seacat.android.client.SeaCatClient;
 
 import java.io.IOException;
@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements StoppedFragment.O
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(com.teskalabs.cvio.demo.R.layout.activity_main);
+		setContentView(R.layout.activity_main);
 
 		catvision = CatVision.getInstance(this);
 		catvision.setCustomId(CatVision.DEFAULT_CUSTOM_ID);
@@ -61,8 +61,8 @@ public class MainActivity extends AppCompatActivity implements StoppedFragment.O
 				firstFragment.setArguments(getIntent().getExtras());
 
 				getSupportFragmentManager().beginTransaction()
-					.add(R.id.fragment_container, firstFragment, StoppedFragment.class.toString())
-					.commit();
+						.add(R.id.fragment_container, firstFragment, StoppedFragment.class.toString())
+						.commit();
 			}
 		}
 
@@ -72,38 +72,38 @@ public class MainActivity extends AppCompatActivity implements StoppedFragment.O
 		receiver = new BroadcastReceiver() {
 			@Override
 			public void onReceive(Context context, Intent intent) {
-			if (intent.hasCategory(SeaCatClient.CATEGORY_SEACAT)) {
-				String action = intent.getAction();
-				if (action.equals(SeaCatClient.ACTION_SEACAT_CLIENTID_CHANGED)) {
+				if (intent.hasCategory(SeaCatClient.CATEGORY_SEACAT)) {
+					String action = intent.getAction();
+					if (action.equals(SeaCatClient.ACTION_SEACAT_CLIENTID_CHANGED)) {
 //					clientTagTextView.setText(catvision.getClientTag());
-					return;
-				} else if (action.equals(SeaCatClient.ACTION_SEACAT_STATE_CHANGED)) {
+						return;
+					} else if (action.equals(SeaCatClient.ACTION_SEACAT_STATE_CHANGED)) {
 //					statusTextView.setText(SeaCatClient.getState());
-					return;
+						return;
+					}
 				}
-			}
-			else if (intent.hasCategory(CatVision.CATEGORY_CVIO)) {
-				String action = intent.getAction();
-				if (action.equals(CatVision.ACTION_CVIO_SHARE_STARTED)) {
+				else if (intent.hasCategory(CatVision.CATEGORY_CVIO)) {
+					String action = intent.getAction();
+					if (action.equals(CatVision.ACTION_CVIO_SHARE_STARTED)) {
 
-					Fragment newFragment = new StartedFragment();
-					FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-					ft.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left);
-					ft.replace(R.id.fragment_container, newFragment, StartedFragment.class.toString());
-					ft.commit();
+						Fragment newFragment = new StartedFragment();
+						FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+						ft.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left);
+						ft.replace(R.id.fragment_container, newFragment, StartedFragment.class.toString());
+						ft.commit();
 
-					return;
-				} else if (action.equals(CatVision.ACTION_CVIO_SHARE_STOPPED)) {
-					Fragment newFragment = new StoppedFragment();
+						return;
+					} else if (action.equals(CatVision.ACTION_CVIO_SHARE_STOPPED)) {
+						Fragment newFragment = new StoppedFragment();
 
-					FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-					ft.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
-					ft.replace(R.id.fragment_container, newFragment, StoppedFragment.class.toString());
-					ft.commit();
+						FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+						ft.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
+						ft.replace(R.id.fragment_container, newFragment, StoppedFragment.class.toString());
+						ft.commit();
 
-					return;
+						return;
+					}
 				}
-			}
 			}
 		};
 

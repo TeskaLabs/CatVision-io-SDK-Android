@@ -13,7 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.teskalabs.cvio.demo.R;
+import io.catvision.app.R;
 
 public class ApiKeyObtainerActivity extends AppCompatActivity {
 	// Permissions

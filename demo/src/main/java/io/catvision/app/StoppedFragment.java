@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.teskalabs.cvio.demo.R;
+import io.catvision.app.R;
 
 
 /**

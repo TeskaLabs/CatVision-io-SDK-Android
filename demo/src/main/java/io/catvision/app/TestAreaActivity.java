@@ -11,7 +11,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.teskalabs.cvio.demo.R;
+import io.catvision.app.R;
 
 public class TestAreaActivity extends AppCompatActivity {
 
