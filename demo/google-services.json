@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:729445720942:android:c67b2ef140bce758",
         "android_client_info": {
-          "package_name": "com.teskalabs.cvio.demo"
+          "package_name": "io.catvision.app"
         }
       },
       "oauth_client": [
@@ -18,7 +18,7 @@
           "client_id": "729445720942-eu8roi972nl926lnf68i5f7viau9e5h3.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.teskalabs.cvio.demo",
+            "package_name": "io.catvision.app",
             "certificate_hash": "71f286812a7e918ac8a1a7c619efe37ee33f18d0"
           }
         },

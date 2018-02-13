@@ -16,7 +16,7 @@
             android:value="G9F1URT/NREYrXO7SKYYdg"/>
 
         <activity
-            android:name=".MainActivity"
+            android:name="io.catvision.app.MainActivity"
             android:label="@string/app_label">
             <intent-filter android:label="@string/app_name">
                 <action android:name="android.intent.action.MAIN"/>
@@ -38,22 +38,22 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".TestAreaActivity"
+            android:name="io.catvision.app.TestAreaActivity"
             android:label="@string/title_activity_test_area"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:name=".QRCodeScannerActivity"
+            android:name="io.catvision.app.QRCodeScannerActivity"
             android:label="@string/title_activity_qrcode_scanner"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:name=".ApiKeyObtainerActivity"
+            android:name="io.catvision.app.ApiKeyObtainerActivity"
             android:label="@string/title_activity_api_key_obtainer"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:name=".InfoActivity"
+            android:name="io.catvision.app.InfoActivity"
             android:label="@string/title_activity_info"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>

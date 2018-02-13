@@ -1,4 +1,4 @@
-package com.teskalabs.cvio.demo;
+package io.catvision.app;
 
 import android.app.Activity;
 import android.content.Intent;

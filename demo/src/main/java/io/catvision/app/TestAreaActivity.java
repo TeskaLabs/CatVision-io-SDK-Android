@@ -1,4 +1,4 @@
-package com.teskalabs.cvio.demo;
+package io.catvision.app;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -11,7 +11,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.google.firebase.analytics.FirebaseAnalytics;
+import com.teskalabs.cvio.demo.R;
 
 public class TestAreaActivity extends AppCompatActivity {
 

@@ -1,6 +1,5 @@
-package com.teskalabs.cvio.demo;
+package io.catvision.app;
 
-import android.*;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -25,6 +24,7 @@ import android.widget.Toast;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.teskalabs.cvio.CatVision;
+import com.teskalabs.cvio.demo.R;
 import com.teskalabs.seacat.android.client.SeaCatClient;
 
 import java.io.IOException;
@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements StoppedFragment.O
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
+		setContentView(com.teskalabs.cvio.demo.R.layout.activity_main);
 
 		catvision = CatVision.getInstance(this);
 		catvision.setCustomId(CatVision.DEFAULT_CUSTOM_ID);

@@ -5,7 +5,7 @@
              android:layout_height="match_parent"
              android:background="@color/colorPrimaryLight"
              android:padding="8dp"
-             tools:context="com.teskalabs.cvio.demo.StartedFragment">
+             tools:context="io.catvision.app.StartedFragment">
 
     <LinearLayout
         android:layout_width="match_parent"

@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     android:background="@color/colorPrimaryLight"
     android:gravity="center"
-    tools:context="com.teskalabs.cvio.demo.MainActivity">
+    tools:context="io.catvision.app.MainActivity">
 
     <TextView
         android:id="@+id/app_header"

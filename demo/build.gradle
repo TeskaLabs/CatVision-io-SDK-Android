@@ -4,7 +4,7 @@ android {
     compileSdkVersion 26
     buildToolsVersion "26.0.2"
     defaultConfig {
-        applicationId "com.teskalabs.cvio.demo"
+        applicationId "io.catvision.app"
         minSdkVersion 21
         targetSdkVersion 26
         versionCode 18020200

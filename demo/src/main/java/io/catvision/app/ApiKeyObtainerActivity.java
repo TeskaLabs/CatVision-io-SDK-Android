@@ -1,4 +1,4 @@
-package com.teskalabs.cvio.demo;
+package io.catvision.app;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -12,6 +12,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+
+import com.teskalabs.cvio.demo.R;
 
 public class ApiKeyObtainerActivity extends AppCompatActivity {
 	// Permissions
