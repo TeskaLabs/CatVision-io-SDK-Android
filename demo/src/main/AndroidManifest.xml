@@ -3,6 +3,7 @@
           package="io.catvision.app">
 
     <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
 
     <application
         android:allowBackup="true"
@@ -16,7 +17,7 @@
             android:value="G9F1URT/NREYrXO7SKYYdg"/>
 
         <activity
-            android:name="io.catvision.app.MainActivity"
+            android:name=".MainActivity"
             android:label="@string/app_label">
             <intent-filter android:label="@string/app_name">
                 <action android:name="android.intent.action.MAIN"/>
@@ -38,25 +39,34 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="io.catvision.app.TestAreaActivity"
+            android:name=".TestAreaActivity"
             android:label="@string/title_activity_test_area"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:name="io.catvision.app.QRCodeScannerActivity"
+            android:name=".QRCodeScannerActivity"
             android:label="@string/title_activity_qrcode_scanner"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:name="io.catvision.app.ApiKeyObtainerActivity"
+            android:name=".ApiKeyObtainerActivity"
             android:label="@string/title_activity_api_key_obtainer"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:name="io.catvision.app.InfoActivity"
+            android:name=".InfoActivity"
             android:label="@string/title_activity_info"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
+        <activity
+            android:name=".AboutActivity"
+            android:label="@string/title_activity_about"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity
+            android:name=".tictactoe.GameActivity"
+            android:label="@string/tic_tac_toe_label"
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>

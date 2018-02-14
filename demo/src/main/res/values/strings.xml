@@ -1,12 +1,12 @@
 <resources>
     <string name="app_name">CatVision.io</string>
     <string name="app_label">CatVision.io</string>
-    <string name="app_header">DEMO APP</string>
+    <string name="title_activity_main">CatVision.io Try Me!</string>
     <string name="title_activity_test_area">Test Area</string>
     <string name="no_client_tag">-</string>
     <string name="no_status">-?-</string>
-    <string name="share_screen_easily">Share the screen easily!</string>
-    <string name="start_connecting">Connect me</string>
+    <string name="share_screen_easily">Experience the beauty of screen sharing!</string>
+    <string name="start_connecting">Pair me</string>
     <string name="start_sharing">Share me</string>
     <string name="stop_sharing">Stop sharing</string>
     <string name="title_activity_started">Started</string>
@@ -14,9 +14,10 @@
 
     <!-- Menu -->
     <string name="menu_show_tag">Info</string>
-    <string name="menu_test_area">Test Area</string>
-    <string name="menu_override">New API Key ID</string>
+    <string name="menu_test_area">Let\'s play a game</string>
+    <string name="menu_override">Add new API Key ID</string>
     <string name="menu_reset">Reset connection</string>
+    <string name="menu_about">About CatVision.io</string>
 
     <!-- General -->
     <string name="dialog_button_ok">OK</string>
@@ -34,4 +35,14 @@
     <string name="dl_open">via browser</string>
     <string name="dl_dialog_message">Connection established.</string>
 
+    <!-- About info -->
+    <string name="title_activity_about">About</string>
+
+    <!-- TicTacToe -->
+    <string name="tic_tac_toe_label">Play a game!</string>
+    <string name="player2_win">Player 2 wins!</string>
+    <string name="player1_win">Player 1 wins!</string>
+    <string name="tie">This is a tie! No one wins!</string>
+    <string name="player2_turn">Player 2\'s turn</string>
+    <string name="player1_turn">Player 1\'s turn</string>
 </resources>

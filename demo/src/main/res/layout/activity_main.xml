@@ -10,28 +10,27 @@
     android:gravity="center"
     tools:context="io.catvision.app.MainActivity">
 
-    <TextView
-        android:id="@+id/app_header"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:singleLine="true"
-        android:gravity="top|center"
-        android:layout_marginTop="30dp"
-        android:paddingBottom="5dp"
-        android:paddingTop="5dp"
-        android:text="@string/app_header"
-        android:textColor="@color/Whiteish_BFC9DCFF"
-        android:textSize="18sp" />
-
     <ImageView
         android:id="@+id/imageView"
+        android:clickable="true"
+        android:focusable="true"
+        android:onClick="onClickMainImage"
         android:layout_width="match_parent"
         android:layout_height="220dp"
         android:layout_marginBottom="20dp"
-        android:layout_marginTop="70dp"
+        android:layout_marginTop="40dp"
         android:scaleType="centerInside"
         app:srcCompat="@drawable/catvision_logo_shadow"/>
+
+    <pl.droidsonroids.gif.GifTextView
+        android:id="@+id/gifView"
+        android:layout_width="170dp"
+        android:layout_height="170dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="60dp"
+        android:background="@drawable/catvision_blink"
+        android:scaleType="centerInside"
+        android:visibility="gone"/>
 
     <FrameLayout
         android:id="@+id/fragment_container"

@@ -19,12 +19,17 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.teskalabs.cvio.CatVision;
 import io.catvision.app.R;
+import io.catvision.app.tictactoe.GameActivity;
+import pl.droidsonroids.gif.GifTextView;
+
 import com.teskalabs.seacat.android.client.SeaCatClient;
 
 import java.io.IOException;
@@ -48,6 +53,8 @@ public class MainActivity extends AppCompatActivity implements StoppedFragment.O
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		// title
+		setTitle(getResources().getString(R.string.title_activity_main));
 
 		catvision = CatVision.getInstance(this);
 		catvision.setCustomId(CatVision.DEFAULT_CUSTOM_ID);
@@ -239,12 +246,19 @@ public class MainActivity extends AppCompatActivity implements StoppedFragment.O
 	}
 
 	public boolean onMenuItemClickTestArea(MenuItem v) {
-		Intent intent = new Intent(getApplicationContext(), TestAreaActivity.class);
+		// Now using io.catvision.app.tictactoe.GameActivity.class instead of TestAreaActivity.class
+		Intent intent = new Intent(this, io.catvision.app.tictactoe.GameActivity.class);
 		startActivity(intent);
 		return true;
 	}
 
 	public boolean onMenuItemClickOverrideApiKeyId(MenuItem v) {
+		String api_key = getPreferenceString(SAVED_API_KEY_ID);
+		if (api_key != null) {
+			startQRScanActivity();
+			return true;
+		}
+
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle("Enter new Api Key id");
 
@@ -273,6 +287,11 @@ public class MainActivity extends AppCompatActivity implements StoppedFragment.O
 		return true;
 	}
 
+	public boolean onMenuItemClickAbout(MenuItem v) {
+		Intent intent = new Intent(getApplicationContext(), AboutActivity.class);
+		startActivity(intent);
+		return true;
+	}
 
 	// ---------------------------------------------------------------------------------------------
 	public void onClickStartSharing(View v) {
@@ -290,6 +309,12 @@ public class MainActivity extends AppCompatActivity implements StoppedFragment.O
 
 	public void onClickSendLink(View v) {
 		shareTextUrl();
+	}
+
+	public void onClickMainImage(View v) {
+		GifTextView gifTextView = (GifTextView)findViewById(R.id.gifView);
+		gifTextView.setVisibility(View.VISIBLE);
+		gifTextView.setBackgroundResource(R.drawable.catvision_blink);
 	}
 
 	// Fragment callbacks --------------------------------------------------------------------------

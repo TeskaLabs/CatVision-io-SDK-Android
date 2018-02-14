@@ -21,4 +21,9 @@
         android:onClick="onMenuItemClickResetIdentity"
         android:title="@string/menu_reset"/>
 
+    <item
+        android:icon="@android:drawable/ic_menu_delete"
+        android:onClick="onMenuItemClickAbout"
+        android:title="@string/menu_about"/>
+
 </menu>
