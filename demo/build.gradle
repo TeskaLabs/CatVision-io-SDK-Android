@@ -7,8 +7,8 @@ android {
         applicationId "io.catvision.app"
         minSdkVersion 21
         targetSdkVersion 26
-        versionCode 18020200
-        versionName 'v1802-rc1'
+        versionCode 18020201
+        versionName 'v1802-rc2'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
