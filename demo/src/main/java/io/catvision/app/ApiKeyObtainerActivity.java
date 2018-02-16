@@ -1,5 +1,7 @@
 package io.catvision.app;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -9,9 +11,11 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 
 import io.catvision.app.R;
 
@@ -71,6 +75,43 @@ public class ApiKeyObtainerActivity extends AppCompatActivity {
 	 */
 	public void openURLinWebBrowser(String url) {
 		startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+	}
+
+	public void obtainApiKeyByInput(View w) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle("Enter new Api Key id");
+
+		// Set up the input
+		final EditText input = new EditText(this);
+
+		// Specify the type of input expected
+		input.setInputType(InputType.TYPE_CLASS_TEXT);
+		builder.setView(input);
+
+		// Set up the buttons
+		builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				String ApiKeyId = input.getText().toString();
+				// Checking
+				if (ApiKeyId.equals("")) {
+					dialog.cancel();
+					return;
+				}
+				// Sending back
+				Intent intent = new Intent();
+				intent.putExtra("apikey_id", ApiKeyId);
+				setResult(RESULT_OK, intent);
+				finish();
+			}
+		});
+		builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.cancel();
+			}
+		});
+		builder.show();
 	}
 
 	// Permissions ---------------------------------------------------------------------------------

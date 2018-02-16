@@ -21,7 +21,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="io.catvision.app.tictactoe.GameActivity">
+    tools:context="io.catvision.app.tictactoe.GameActivity"
+    tools:showIn="@layout/activity_test_area">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"

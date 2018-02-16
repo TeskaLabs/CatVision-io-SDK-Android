@@ -23,6 +23,8 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_api_key_obtainer"/>
+    <include
+        layout="@layout/content_api_key_obtainer"
+        android:layout_height="284dp"/>
 
 </android.support.design.widget.CoordinatorLayout>

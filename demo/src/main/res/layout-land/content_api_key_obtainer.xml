@@ -51,7 +51,6 @@
                     android:textColor="@android:color/white" />
 
                 <TextView
-                    android:paddingTop="20dp"
                     android:layout_below="@id/buttonQRCode"
                     android:id="@+id/middle_text"
                     android:layout_width="match_parent"

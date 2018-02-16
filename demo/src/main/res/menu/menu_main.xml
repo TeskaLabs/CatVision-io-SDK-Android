@@ -9,10 +9,6 @@
         android:title="@string/menu_show_tag" />
 
     <item
-        android:onClick="onMenuItemClickOverrideApiKeyId"
-        android:title="@string/menu_override"/>
-
-    <item
         android:onClick="onMenuItemClickTestArea"
         android:title="@string/menu_test_area"/>
 
