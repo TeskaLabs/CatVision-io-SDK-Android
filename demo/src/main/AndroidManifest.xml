@@ -67,6 +67,11 @@
             android:name=".tictactoe.GameActivity"
             android:label="@string/tic_tac_toe_label"
             android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".HelpActivity"
+            android:label="@string/title_activity_help"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
     </application>
 
 </manifest>

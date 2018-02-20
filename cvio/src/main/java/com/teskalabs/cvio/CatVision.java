@@ -504,7 +504,7 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 				if (mVirtualDisplay != null) mVirtualDisplay.release();
 				if (mImageReader != null) mImageReader.setOnImageAvailableListener(null, null);
 				if (mOrientationChangeCallback != null) mOrientationChangeCallback.disable();
-				sMediaProjection.unregisterCallback(MediaProjectionStopCallback.this);
+				if (sMediaProjection != null) sMediaProjection.unregisterCallback(MediaProjectionStopCallback.this);
 				sMediaProjection = null;
 
 				vncServer.shutdown();
@@ -534,6 +534,7 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 				final int rotation = mDisplay.getRotation();
 				if (rotation != mRotation) {
 					mRotation = rotation;
+					vncServer.shutdown();
 					try {
 						// clean up
 						if (mVirtualDisplay != null) mVirtualDisplay.release();

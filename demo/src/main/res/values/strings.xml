@@ -16,10 +16,16 @@
     <string name="menu_show_tag">Info</string>
     <string name="menu_test_area">Let\'s play a game</string>
     <string name="menu_reset">Unpair device</string>
+    <string name="menu_help">Help</string>
     <string name="menu_about">About CatVision.io</string>
 
     <!-- General -->
     <string name="dialog_button_ok">OK</string>
+    <string name="dialog_button_cancel">Cancel</string>
+
+    <!-- Unpairing device -->
+    <string name="dlg_unpair_title">Unpair device</string>
+    <string name="dlg_unpair_text">Do you really want to unpair your device?</string>
 
     <!-- Started sharing -->
     <string name="started_sharing_text">Screen sharing is active</string>
@@ -39,6 +45,9 @@
 
     <!-- About info -->
     <string name="title_activity_about">About</string>
+
+    <!-- Help page -->
+    <string name="title_activity_help">Help</string>
 
     <!-- TicTacToe -->
     <string name="tic_tac_toe_label">Play a game!</string>

@@ -226,16 +226,37 @@ public class MainActivity extends AppCompatActivity implements StoppedFragment.O
 	}
 
 	public boolean onMenuItemClickResetIdentity(MenuItem v) {
-		try {
-			SeaCatClient.reset();
-			// Save also in this context
-			savePreferenceString(SAVED_API_KEY_ID, null);
-			refreshFragments();
-			// Toast
-			Toast.makeText(this, "Client identity reset.", Toast.LENGTH_LONG).show();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		// Showing a dialog
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle(getResources().getString(R.string.dlg_unpair_title));
+		builder.setMessage(getResources().getString(R.string.dlg_unpair_text));
+		builder.setCancelable(true);
+		builder.setPositiveButton(
+				getResources().getString(R.string.dialog_button_ok),
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						dialog.cancel();
+						try {
+							SeaCatClient.reset();
+							// Save also in this context
+							savePreferenceString(SAVED_API_KEY_ID, null);
+							refreshFragments();
+							// Toast
+							Toast.makeText(MainActivity.this, "Device unpaired.", Toast.LENGTH_LONG).show();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
+				});
+		builder.setNegativeButton(
+				getResources().getString(R.string.dialog_button_cancel),
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						dialog.cancel();
+					}
+				});
+		AlertDialog alert = builder.create();
+		alert.show();
 		return true;
 	}
 
@@ -248,6 +269,12 @@ public class MainActivity extends AppCompatActivity implements StoppedFragment.O
 
 	public boolean onMenuItemClickAbout(MenuItem v) {
 		Intent intent = new Intent(getApplicationContext(), AboutActivity.class);
+		startActivity(intent);
+		return true;
+	}
+
+	public boolean onMenuItemClickHelp(MenuItem v) {
+		Intent intent = new Intent(getApplicationContext(), HelpActivity.class);
 		startActivity(intent);
 		return true;
 	}

@@ -13,12 +13,15 @@
         android:title="@string/menu_test_area"/>
 
     <item
-        android:icon="@android:drawable/ic_menu_delete"
+        name=""
         android:onClick="onMenuItemClickResetIdentity"
         android:title="@string/menu_reset"/>
 
     <item
-        android:icon="@android:drawable/ic_menu_delete"
+        android:onClick="onMenuItemClickHelp"
+        android:title="@string/menu_help"/>
+
+    <item
         android:onClick="onMenuItemClickAbout"
         android:title="@string/menu_about"/>
 
