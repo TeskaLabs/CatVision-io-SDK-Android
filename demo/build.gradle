@@ -5,7 +5,7 @@ android {
     compileSdkVersion 26
     buildToolsVersion "26.0.2"
     defaultConfig {
-        applicationId "io.catvision.app"
+        applicationId "io.catvision.appl"
         minSdkVersion 21
         targetSdkVersion 26
         versionCode 18020300

@@ -1,12 +1,10 @@
-package io.catvision.app;
+package io.catvision.appl;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
-
-import io.catvision.app.R;
 
 public class InfoActivity extends AppCompatActivity {
 

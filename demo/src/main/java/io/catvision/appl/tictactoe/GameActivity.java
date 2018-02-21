@@ -1,4 +1,4 @@
-package io.catvision.app.tictactoe;
+package io.catvision.appl.tictactoe;
 
 import java.util.Random;
 
@@ -13,10 +13,10 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
-import io.catvision.app.tictactoe.GameView.ICellListener;
-import io.catvision.app.tictactoe.GameView.State;
+import io.catvision.appl.tictactoe.GameView.ICellListener;
+import io.catvision.appl.tictactoe.GameView.State;
 
-import io.catvision.app.R;
+import io.catvision.appl.R;
 
 
 public class GameActivity extends AppCompatActivity {

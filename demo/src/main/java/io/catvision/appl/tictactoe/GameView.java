@@ -1,4 +1,4 @@
-package io.catvision.app.tictactoe;
+package io.catvision.appl.tictactoe;
 
 import java.util.Random;
 
@@ -22,7 +22,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
-import io.catvision.app.R;
+import io.catvision.appl.R;
 
 //-----------------------------------------------
 

@@ -1,4 +1,4 @@
-package io.catvision.app;
+package io.catvision.appl;
 
 import android.app.Activity;
 import android.content.Intent;

@@ -1,4 +1,4 @@
-package io.catvision.app;
+package io.catvision.appl;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -16,8 +16,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-
-import io.catvision.app.R;
 
 public class ApiKeyObtainerActivity extends AppCompatActivity {
 	// Permissions

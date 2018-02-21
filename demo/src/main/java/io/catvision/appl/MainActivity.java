@@ -1,4 +1,4 @@
-package io.catvision.app;
+package io.catvision.appl;
 
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
@@ -23,13 +23,10 @@ import android.widget.Toast;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.teskalabs.cvio.CatVision;
 import pl.droidsonroids.gif.GifTextView;
-import za.co.riggaroo.materialhelptutorial.TutorialItem;
-import za.co.riggaroo.materialhelptutorial.tutorial.MaterialTutorialActivity;
 
 import com.teskalabs.seacat.android.client.SeaCatClient;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements StoppedFragment.OnFragmentInteractionListener, StartedFragment.OnFragmentInteractionListener {
 
@@ -272,7 +269,7 @@ public class MainActivity extends AppCompatActivity implements StoppedFragment.O
 
 	public boolean onMenuItemClickTestArea(MenuItem v) {
 		// Now using io.catvision.app.tictactoe.GameActivity.class instead of TestAreaActivity.class
-		Intent intent = new Intent(this, io.catvision.app.tictactoe.GameActivity.class);
+		Intent intent = new Intent(this, io.catvision.appl.tictactoe.GameActivity.class);
 		startActivity(intent);
 		return true;
 	}
