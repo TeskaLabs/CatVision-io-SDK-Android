@@ -23,10 +23,13 @@ import android.widget.Toast;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.teskalabs.cvio.CatVision;
 import pl.droidsonroids.gif.GifTextView;
+import za.co.riggaroo.materialhelptutorial.TutorialItem;
+import za.co.riggaroo.materialhelptutorial.tutorial.MaterialTutorialActivity;
 
 import com.teskalabs.seacat.android.client.SeaCatClient;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements StoppedFragment.OnFragmentInteractionListener, StartedFragment.OnFragmentInteractionListener {
 
@@ -39,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements StoppedFragment.O
 	private static final String TAG = MainActivity.class.getName();
 	// Preferences
 	public static String SAVED_API_KEY_ID = "SAVED_API_KEY_ID";
+	public static String NOT_FIRST_TIME = "NOT_FIRST_TIME";
 
 
 	// Activity Lifecycle methods ------------------------------------------------------------------
@@ -129,6 +133,12 @@ public class MainActivity extends AppCompatActivity implements StoppedFragment.O
 			AlertDialog alert = builder.create();
 			alert.show();
 		}
+
+//		// Only for the first time
+//		if (!getPreferenceBoolean(NOT_FIRST_TIME)) {
+//			savePreferenceBoolean(NOT_FIRST_TIME, true);
+//			loadTutorial();
+//		}
 	}
 
 	@Override
@@ -355,6 +365,16 @@ public class MainActivity extends AppCompatActivity implements StoppedFragment.O
 	}
 
 	/**
+	 * Getting a boolean from shared preferences.
+	 * @param name String
+	 * @return boolean
+	 */
+	public boolean getPreferenceBoolean(String name) {
+		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+		return settings.getBoolean(name, false);
+	}
+
+	/**
 	 * Setting a string to shared preferences.
 	 * @param name String
 	 * @param value String
@@ -365,9 +385,38 @@ public class MainActivity extends AppCompatActivity implements StoppedFragment.O
 		editor.apply();
 	}
 
+	/**
+	 * Setting a boolean to shared preferences.
+	 * @param name String
+	 * @param value boolean
+	 */
+	public void savePreferenceBoolean(String name, boolean value) {
+		SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+		editor.putBoolean(name, value);
+		editor.apply();
+	}
+
 	@Override
 	public boolean onSupportNavigateUp() {
 		onBackPressed();
 		return true;
 	}
+
+	// Tutorial ------------------------------------------------------------------------------------
+//	/**
+//	 * Shows the tutorial slider to the user.
+//	 */
+//	public void loadTutorial() {
+//		Intent mainAct = new Intent(this, MaterialTutorialActivity.class);
+//		mainAct.putParcelableArrayListExtra(MaterialTutorialActivity.MATERIAL_TUTORIAL_ARG_TUTORIAL_ITEMS, getTutorialItems(this));
+//		startActivity(mainAct);
+//	}
+
+//	private ArrayList<TutorialItem> getTutorialItems(Context context) {
+//		TutorialItem tutorialItem1 = new TutorialItem(context.getString(R.string.dlg_unpair_title), context.getString(R.string.dlg_unpair_text),
+//				R.color.colorGo, R.drawable.catvision_logo);
+//		ArrayList<TutorialItem> tutorialItems = new ArrayList<>();
+//		tutorialItems.add(tutorialItem1);
+//		return tutorialItems;
+//	}
 }

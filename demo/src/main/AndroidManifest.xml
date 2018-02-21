@@ -80,6 +80,11 @@
             android:label="@string/title_activity_help"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
+        <activity
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:name="za.co.riggaroo.materialhelptutorial.tutorial.MaterialTutorialActivity">
+        </activity>
     </application>
 
 </manifest>
