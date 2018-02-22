@@ -10,6 +10,37 @@
       "client_info": {
         "mobilesdk_app_id": "1:500594913840:android:e62712fcb81de0fc",
         "android_client_info": {
+          "package_name": "io.catvision.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "500594913840-53j3d26oj6545a2jtok11l4pn2eimo4l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA30dAiJyft9T7tzhnvTDkC2D21ewn0GZM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:500594913840:android:ed34010ab865b2a4",
+        "android_client_info": {
           "package_name": "io.catvision.appl"
         }
       },
