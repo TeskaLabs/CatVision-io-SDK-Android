@@ -8,8 +8,8 @@ android {
         applicationId "io.catvision.appl"
         minSdkVersion 21
         targetSdkVersion 26
-        versionCode 18020301
-        versionName 'v1802-1'
+        versionCode 18020302
+        versionName 'v1802-2'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -34,7 +34,7 @@ dependencies {
     compile project(':seacat')
     compile project(':cvio')
 
-    compile 'za.co.riggaroo:materialhelptutorial:1.+'
+    compile 'com.github.apl-devs:appintro:v4.2.3'
     compile 'pl.droidsonroids.gif:android-gif-drawable:1.2.+'
     compile 'me.dm7.barcodescanner:zxing:1.9.8'
     compile 'com.android.support:appcompat-v7:26.+'

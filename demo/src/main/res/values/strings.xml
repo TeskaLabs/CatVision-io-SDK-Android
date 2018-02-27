@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">CatVision.io</string>
     <string name="app_label">CatVision.io</string>
-    <string name="title_activity_main">CatVision.io Try Me!</string>
+    <string name="title_activity_main">CatVision.io App</string>
     <string name="title_activity_test_area">Test Area</string>
     <string name="no_client_tag">-</string>
     <string name="no_status">-?-</string>
@@ -22,6 +22,21 @@
     <!-- General -->
     <string name="dialog_button_ok">OK</string>
     <string name="dialog_button_cancel">Cancel</string>
+
+    <!-- Intro page -->
+    <string name="app_intro">Intro</string>
+    <string name="intro_title_first">CatVision.io</string>
+    <string name="intro_title_other">Pairing tutorial</string>
+    <string name="intro_first_title">Welcome to CatVision.io App</string>
+    <string name="intro_first_text">Experience screen sharing &amp; remote access provided by CatVision.io SDK for Android</string>
+    <string name="intro_second_title">To start, pair this device with Web-App</string>
+    <string name="intro_second_text">And gain access to this device from your computer</string>
+    <string name="intro_third_title">Pairing option #1</string>
+    <string name="intro_third_text">Scan QR code from Web-App at app.catvision.io to pair this device easily</string>
+    <string name="intro_fourth_title">Pairing option #2</string>
+    <string name="intro_fourth_text">Tap a button in this app to pair through your device\'s browser</string>
+    <string name="intro_fifth_title">Get started!</string>
+    <string name="intro_fifth_text">Tap on PAIR ME button &amp; enjoy the beauty of screen sharing!</string>
 
     <!-- Unpairing device -->
     <string name="dlg_unpair_title">Unpair device</string>

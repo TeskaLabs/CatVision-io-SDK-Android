@@ -3,6 +3,7 @@
           package="io.catvision.appl">
 
     <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
 
     <application
@@ -81,10 +82,8 @@
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:name="za.co.riggaroo.materialhelptutorial.tutorial.MaterialTutorialActivity">
-        </activity>
+            android:name="io.catvision.appl.IntroActivity"
+            android:label="@string/app_intro" />
     </application>
 
 </manifest>

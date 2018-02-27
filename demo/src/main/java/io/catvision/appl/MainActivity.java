@@ -27,6 +27,7 @@ import pl.droidsonroids.gif.GifTextView;
 import com.teskalabs.seacat.android.client.SeaCatClient;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements StoppedFragment.OnFragmentInteractionListener, StartedFragment.OnFragmentInteractionListener {
 
@@ -131,11 +132,11 @@ public class MainActivity extends AppCompatActivity implements StoppedFragment.O
 			alert.show();
 		}
 
-//		// Only for the first time
-//		if (!getPreferenceBoolean(NOT_FIRST_TIME)) {
-//			savePreferenceBoolean(NOT_FIRST_TIME, true);
-//			loadTutorial();
-//		}
+		// Only for the first time
+		if (!getPreferenceBoolean(NOT_FIRST_TIME)) {
+			savePreferenceBoolean(NOT_FIRST_TIME, true);
+			loadTutorial();
+		}
 	}
 
 	@Override
@@ -400,20 +401,11 @@ public class MainActivity extends AppCompatActivity implements StoppedFragment.O
 	}
 
 	// Tutorial ------------------------------------------------------------------------------------
-//	/**
-//	 * Shows the tutorial slider to the user.
-//	 */
-//	public void loadTutorial() {
-//		Intent mainAct = new Intent(this, MaterialTutorialActivity.class);
-//		mainAct.putParcelableArrayListExtra(MaterialTutorialActivity.MATERIAL_TUTORIAL_ARG_TUTORIAL_ITEMS, getTutorialItems(this));
-//		startActivity(mainAct);
-//	}
-
-//	private ArrayList<TutorialItem> getTutorialItems(Context context) {
-//		TutorialItem tutorialItem1 = new TutorialItem(context.getString(R.string.dlg_unpair_title), context.getString(R.string.dlg_unpair_text),
-//				R.color.colorGo, R.drawable.catvision_logo);
-//		ArrayList<TutorialItem> tutorialItems = new ArrayList<>();
-//		tutorialItems.add(tutorialItem1);
-//		return tutorialItems;
-//	}
+	/**
+	 * Shows the tutorial slider to the user.
+	 */
+	public void loadTutorial() {
+		Intent introAct = new Intent(this, IntroActivity.class);
+		startActivity(introAct);
+	}
 }
