@@ -17,11 +17,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
+
 public class ApiKeyObtainerActivity extends AppCompatActivity {
 	// Permissions
 	private static int CAMERA_PERMISSION = 201;
 	// Requests
 	private static int QR_CODE_REQUEST = 1;
+
+	private FirebaseAnalytics mFirebaseAnalytics;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +40,8 @@ public class ApiKeyObtainerActivity extends AppCompatActivity {
 		} catch (NullPointerException e) {
 			e.printStackTrace();
 		}
+
+		mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 	}
 
 	@Override
@@ -54,6 +60,7 @@ public class ApiKeyObtainerActivity extends AppCompatActivity {
 	}
 
 	public void onClickGetDeepLink(View v) {
+		mFirebaseAnalytics.logEvent(getResources().getString(R.string.event_pair_link), new Bundle());
 		openURLinWebBrowser(getResources().getString(R.string.open_app_with_key_url));
 		finish();
 	}
@@ -63,6 +70,7 @@ public class ApiKeyObtainerActivity extends AppCompatActivity {
 	 * Starts an activity that retrieves the QR code.
 	 */
 	public void startQRScanActivity() {
+		mFirebaseAnalytics.logEvent(getResources().getString(R.string.event_pair_qr), new Bundle());
 		Intent intent = new Intent(getApplicationContext(), QRCodeScannerActivity.class);
 		startActivityForResult(intent, QR_CODE_REQUEST);
 	}
@@ -77,7 +85,7 @@ public class ApiKeyObtainerActivity extends AppCompatActivity {
 
 	public void obtainApiKeyByInput(View w) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setTitle("Enter new Api Key id");
+		builder.setTitle(getResources().getString(R.string.manual_new_api_key));
 
 		// Set up the input
 		final EditText input = new EditText(this);
@@ -87,7 +95,7 @@ public class ApiKeyObtainerActivity extends AppCompatActivity {
 		builder.setView(input);
 
 		// Set up the buttons
-		builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+		builder.setPositiveButton(getResources().getString(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				String ApiKeyId = input.getText().toString();
@@ -103,7 +111,7 @@ public class ApiKeyObtainerActivity extends AppCompatActivity {
 				finish();
 			}
 		});
-		builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+		builder.setNegativeButton(getResources().getString(R.string.dialog_button_cancel), new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				dialog.cancel();

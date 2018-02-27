@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="event_pair_me">pair_me</string>
+    <string name="event_pair_qr">pair_qr</string>
+    <string name="event_pair_link">pair_link</string>
+    <string name="event_share_me">share_me</string>
+</resources>

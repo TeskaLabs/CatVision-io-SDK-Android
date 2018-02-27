@@ -47,8 +47,8 @@
 
     <!-- QR scan related -->
     <string name="title_activity_api_key_obtainer">Pair me!</string>
-    <string name="api_obtain_top_text">Scan QR Code from app.catvision.io to pair this app with Web-App</string>
-    <string name="api_obtain_middle_text">or pair this app with Web-App from your device\'s browser</string>
+    <string name="api_obtain_top_text">Scan QR Code from app.catvision.io to pair this device with Web-App</string>
+    <string name="api_obtain_middle_text">or pair this device with Web-App from your device\'s browser</string>
     <string name="title_activity_qrcode_scanner">QR code scanner</string>
     <string name="qr_scan">Scan QR code</string>
     <string name="qr_dialog_message">Pairing successfully completed!</string>
@@ -57,6 +57,9 @@
     <!-- Deep-link related -->
     <string name="dl_open">via browser</string>
     <string name="dl_dialog_message">Pairing successfully completed!</string>
+
+    <!-- Manual obtaining -->
+    <string name="manual_new_api_key">"Enter new API key ID"</string>
 
     <!-- About info -->
     <string name="title_activity_about">About</string>

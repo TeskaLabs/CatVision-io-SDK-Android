@@ -291,8 +291,10 @@ public class MainActivity extends AppCompatActivity implements StoppedFragment.O
 	public void onClickStartSharing(View v) {
 		String api_key = getPreferenceString(SAVED_API_KEY_ID);
 		if (api_key != null) {
+			mFirebaseAnalytics.logEvent(getResources().getString(R.string.event_share_me), new Bundle());
 			catvision.requestStart(this, CATVISION_REQUEST_CODE);
 		} else {
+			mFirebaseAnalytics.logEvent(getResources().getString(R.string.event_pair_me), new Bundle());
 			startQRScanActivity();
 		}
 	}
