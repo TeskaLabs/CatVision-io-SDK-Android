@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements StoppedFragment.O
 	// Requests
 	private int CATVISION_REQUEST_CODE = 100;
 	private int API_KEY_OBTAINER_REQUEST = 101;
+	private int INTRO_REQUEST = 102;
 	private static final String TAG = MainActivity.class.getName();
 	// Preferences
 	public static String SAVED_API_KEY_ID = "SAVED_API_KEY_ID";
@@ -134,7 +135,6 @@ public class MainActivity extends AppCompatActivity implements StoppedFragment.O
 
 		// Only for the first time
 		if (!getPreferenceBoolean(NOT_FIRST_TIME)) {
-			savePreferenceBoolean(NOT_FIRST_TIME, true);
 			loadTutorial();
 		}
 	}
@@ -168,7 +168,9 @@ public class MainActivity extends AppCompatActivity implements StoppedFragment.O
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (requestCode == CATVISION_REQUEST_CODE) {
+		if (requestCode == INTRO_REQUEST) {
+			savePreferenceBoolean(NOT_FIRST_TIME, true);
+		} else if (requestCode == CATVISION_REQUEST_CODE) {
 			catvision.onActivityResult(this, resultCode, data);
 
 			Bundle bundle = new Bundle();
@@ -408,6 +410,6 @@ public class MainActivity extends AppCompatActivity implements StoppedFragment.O
 	 */
 	public void loadTutorial() {
 		Intent introAct = new Intent(this, IntroActivity.class);
-		startActivity(introAct);
+		startActivityForResult(introAct, INTRO_REQUEST);
 	}
 }
