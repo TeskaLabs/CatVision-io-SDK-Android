@@ -537,9 +537,15 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 					vncServer.shutdown();
 					try {
 						// clean up
-						if (mVirtualDisplay != null) mVirtualDisplay.release();
-						if (mImageReader != null)
+						if (mVirtualDisplay != null) {
+							mVirtualDisplay.release();
+							mVirtualDisplay = null;
+						}
+						if (mImageReader != null) {
 							mImageReader.setOnImageAvailableListener(null, null);
+							mImageReader.close();
+							mImageReader = null;
+						}
 
 						// re-create virtual display depending on device width / height
 						createVirtualDisplay();
