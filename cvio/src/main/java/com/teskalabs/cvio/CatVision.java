@@ -349,6 +349,7 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 			} else {
 				if (sMediaProjection != null) {
 					sMediaProjection.stop();
+					sMediaProjection = null;
 
 					try {
 						mHandler.post(new JSONMessageTrigger("cvio-capture-stopped") {
