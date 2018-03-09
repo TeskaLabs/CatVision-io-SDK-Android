@@ -75,15 +75,11 @@ task assembleWithSeaCat(dependsOn: assemble) << {
     android.libraryVariants.all { variant ->
         variant.outputs.each { output ->
             // Find SeaCat Client AAR
-            def seacatAARPath = ""
-            configurations.default.each {
-                if (it.name.contains("SeaCat")) {
-                    seacatAARPath = it.path
-                }
-            }
-            if (seacatAARPath == "") {
+            def seacatAARFile = new File("${projectDir}/../seacat").list().find{it=~/SeaCat.*\.aar$/}
+            if (seacatAARFile == null) {
                 throw new GradleException('SeaCat AAR not found in project files.')
             }
+            def seacatAARPath = "${projectDir}/../seacat/${seacatAARFile}"
 
             // Run merge script
             def process
@@ -93,6 +89,7 @@ task assembleWithSeaCat(dependsOn: assemble) << {
             if (process.exitValue() != 0) {
                 throw new GradleException("Execution of the merge script returned ${process.exitValue()}.")
             }
+            println "$output.name\tassembled with SeaCat: ${seacatAARFile}"
         }
     }
 }
