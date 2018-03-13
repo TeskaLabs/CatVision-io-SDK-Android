@@ -51,12 +51,12 @@
     <string name="api_obtain_middle_text">or pair this device with Web-App from your device\'s browser</string>
     <string name="title_activity_qrcode_scanner">QR code scanner</string>
     <string name="qr_scan">Scan QR code</string>
-    <string name="qr_dialog_message">Pairing successfully completed!</string>
+    <string name="qr_dialog_message">Pairing successful! Continue by tapping the \"SHARE ME\" button.</string>
     <string name="text_override">Input API Key ID</string>
 
     <!-- Deep-link related -->
     <string name="dl_open">via browser</string>
-    <string name="dl_dialog_message">Pairing successfully completed!</string>
+    <string name="dl_dialog_message">Pairing successful! Continue by tapping the \"SHARE ME\" button.</string>
 
     <!-- Manual obtaining -->
     <string name="manual_new_api_key">"Enter new API key ID"</string>
@@ -74,4 +74,5 @@
     <string name="tie">This is a tie! No one wins!</string>
     <string name="player2_turn">Player 2\'s turn</string>
     <string name="player1_turn">Player 1\'s turn</string>
+
 </resources>

@@ -573,8 +573,10 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 		int mWidth = (int)(size.x / downscale);
 		int mHeight = (int)(size.y / downscale);
 
-		vncServer.shutdown();
-		vncServer.run(mWidth, mHeight);
+		if (vncServer != null) {
+			vncServer.shutdown();
+			vncServer.run(mWidth, mHeight);
+		}
 		startRepeatingPing();
 
 		int VIRTUAL_DISPLAY_FLAGS = DisplayManager.VIRTUAL_DISPLAY_FLAG_OWN_CONTENT_ONLY | DisplayManager.VIRTUAL_DISPLAY_FLAG_PUBLIC;
