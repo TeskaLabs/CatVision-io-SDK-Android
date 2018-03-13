@@ -2,8 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="io.catvision.appl">
 
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permadbission.CAMERA"/>
     <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
 
     <application
@@ -18,7 +17,6 @@
             android:value="G9F1URT/NREYrXO7SKYYdg"/>
 
         <activity
-            android:screenOrientation="portrait"
             android:name="io.catvision.appl.MainActivity"
             android:label="@string/app_label">
             <intent-filter android:label="@string/app_name">
@@ -41,42 +39,35 @@
             </intent-filter>
         </activity>
         <activity
-            android:screenOrientation="portrait"
             android:name="io.catvision.appl.TestAreaActivity"
             android:label="@string/title_activity_test_area"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:screenOrientation="portrait"
             android:name="io.catvision.appl.QRCodeScannerActivity"
             android:label="@string/title_activity_qrcode_scanner"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:screenOrientation="portrait"
             android:name="io.catvision.appl.ApiKeyObtainerActivity"
             android:label="@string/title_activity_api_key_obtainer"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:screenOrientation="portrait"
             android:name="io.catvision.appl.InfoActivity"
             android:label="@string/title_activity_info"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:screenOrientation="portrait"
             android:name="io.catvision.appl.AboutActivity"
             android:label="@string/title_activity_about"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:screenOrientation="portrait"
             android:name="io.catvision.appl.tictactoe.GameActivity"
             android:label="@string/tic_tac_toe_label"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity
-            android:screenOrientation="portrait"
             android:name="io.catvision.appl.HelpActivity"
             android:label="@string/title_activity_help"
             android:theme="@style/AppTheme.NoActionBar">

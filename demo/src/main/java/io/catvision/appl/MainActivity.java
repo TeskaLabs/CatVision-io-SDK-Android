@@ -114,6 +114,7 @@ public class MainActivity extends AppCompatActivity implements StoppedFragment.O
 		// Deep linking
 		Uri data = this.getIntent().getData();
 		if (data != null && data.isHierarchical()) {
+			this.setIntent(new Intent());
 			// Setting the API key
 			String apikey = data.getQueryParameter("apikey").replace(" ", "+");
 			setApiKeyId(apikey);
@@ -170,12 +171,14 @@ public class MainActivity extends AppCompatActivity implements StoppedFragment.O
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == INTRO_REQUEST) {
 			savePreferenceBoolean(NOT_FIRST_TIME, true);
-			int type = data.getIntExtra("type", IntroActivity.TYPE_NONE);
-			if (type == IntroActivity.TYPE_QR) {
-				setApiKeyFromResource(data);
-			} else if (type == IntroActivity.TYPE_DEEP) {
-				mFirebaseAnalytics.logEvent(getResources().getString(R.string.event_pair_link), new Bundle());
-				startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getResources().getString(R.string.open_app_with_key_url))));
+			if (data != null) {
+				int type = data.getIntExtra("type", IntroActivity.TYPE_NONE);
+				if (type == IntroActivity.TYPE_QR) {
+					setApiKeyFromResource(data);
+				} else if (type == IntroActivity.TYPE_DEEP) {
+					mFirebaseAnalytics.logEvent(getResources().getString(R.string.event_pair_link), new Bundle());
+					startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getResources().getString(R.string.open_app_with_key_url))));
+				}
 			}
 		} else if (requestCode == CATVISION_REQUEST_CODE) {
 			catvision.onActivityResult(this, resultCode, data);

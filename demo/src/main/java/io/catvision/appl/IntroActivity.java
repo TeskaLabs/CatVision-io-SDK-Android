@@ -117,8 +117,8 @@ public class IntroActivity extends AppIntro {
 
 		// Turn vibration on and set intensity.
 		// NOTE: you will probably need to ask VIBRATE permission in Manifest.
-		setVibrate(true);
-		setVibrateIntensity(30);
+		// setVibrate(true);
+		// setVibrateIntensity(30);
 
 		mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 	}
