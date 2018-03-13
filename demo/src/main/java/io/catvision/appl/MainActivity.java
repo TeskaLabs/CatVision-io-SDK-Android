@@ -170,6 +170,13 @@ public class MainActivity extends AppCompatActivity implements StoppedFragment.O
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == INTRO_REQUEST) {
 			savePreferenceBoolean(NOT_FIRST_TIME, true);
+			int type = data.getIntExtra("type", IntroActivity.TYPE_NONE);
+			if (type == IntroActivity.TYPE_QR) {
+				setApiKeyFromResource(data);
+			} else if (type == IntroActivity.TYPE_DEEP) {
+				mFirebaseAnalytics.logEvent(getResources().getString(R.string.event_pair_link), new Bundle());
+				startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getResources().getString(R.string.open_app_with_key_url))));
+			}
 		} else if (requestCode == CATVISION_REQUEST_CODE) {
 			catvision.onActivityResult(this, resultCode, data);
 
@@ -180,27 +187,35 @@ public class MainActivity extends AppCompatActivity implements StoppedFragment.O
 
 		} else if (requestCode == API_KEY_OBTAINER_REQUEST) {
 			if (resultCode == RESULT_OK) {
-				// Setting a new API key from the scan
-				String apikey_id = data.getStringExtra("apikey_id");
-				if (apikey_id != null) {
-					// Setting the API key
-					setApiKeyId(apikey_id);
-					// Showing a dialog
-					AlertDialog.Builder builder = new AlertDialog.Builder(this);
-					builder.setTitle(getResources().getString(R.string.app_name));
-					builder.setMessage(getResources().getString(R.string.qr_dialog_message));
-					builder.setCancelable(true);
-					builder.setPositiveButton(
-							getResources().getString(R.string.dialog_button_ok),
-							new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog, int id) {
-									dialog.cancel();
-								}
-							});
-					AlertDialog alert = builder.create();
-					alert.show();
-				}
+				setApiKeyFromResource(data);
 			}
+		}
+	}
+
+	/**
+	 * Setting the API key ID from a specified resource.
+	 * @param data
+	 */
+	public void setApiKeyFromResource(Intent data) {
+		// Setting a new API key from the scan
+		String apikey_id = data.getStringExtra("apikey_id");
+		if (apikey_id != null) {
+			// Setting the API key
+			setApiKeyId(apikey_id);
+			// Showing a dialog
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setTitle(getResources().getString(R.string.app_name));
+			builder.setMessage(getResources().getString(R.string.qr_dialog_message));
+			builder.setCancelable(true);
+			builder.setPositiveButton(
+					getResources().getString(R.string.dialog_button_ok),
+					new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int id) {
+							dialog.cancel();
+						}
+					});
+			AlertDialog alert = builder.create();
+			alert.show();
 		}
 	}
 
