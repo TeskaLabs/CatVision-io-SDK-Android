@@ -22,9 +22,9 @@ public class IntroActivity extends AppIntro {
 	public static int TYPE_DEEP = 2;
 
 	// Permissions
-	private static int CAMERA_PERMISSION = 201;
+	private static int CAMERA_PERMISSION = 21;
 	// Requests
-	private static int QR_CODE_REQUEST = 1;
+	private static int QR_CODE_REQUEST = 31;
 	// Variables
 	private FirebaseAnalytics mFirebaseAnalytics;
 	private AppIntroFragment firstFragment;
