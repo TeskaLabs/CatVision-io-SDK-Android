@@ -1,2 +1,2 @@
 configurations.maybeCreate("default")
-artifacts.add("default", file('SeaCatClient_Android_v1708-release.aar'))
+artifacts.add("default", file('SeaCatClient_Android_v1806-beta-3-release.aar'))

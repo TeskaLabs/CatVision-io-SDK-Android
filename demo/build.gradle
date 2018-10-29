@@ -3,7 +3,7 @@ apply plugin: 'io.fabric'
 
 android {
     compileSdkVersion 26
-    buildToolsVersion "26.0.2"
+    buildToolsVersion '28.0.3'
     defaultConfig {
         applicationId "io.catvision.appl"
         minSdkVersion 21
@@ -43,7 +43,7 @@ dependencies {
     compile('com.crashlytics.sdk.android:crashlytics:2.9.0@aar') {
         transitive = true
     }
-    compile 'com.google.firebase:firebase-core:11.8.0'
+    compile 'com.google.firebase:firebase-core:16.0.4'
     compile 'com.android.support:support-v4:26.+'
     testCompile 'junit:junit:4.12'
 }
