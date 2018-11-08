@@ -98,8 +98,14 @@ task releaseAndAlign(dependsOn: assembleWithSeaCat) << {
     android.libraryVariants.all { variant ->
         if (variant.buildType.name == "release") {
             variant.outputs.each { output ->
-                def ZIPALIGN = '/Users/mpavelka/Library/Android/sdk/build-tools/26.0.0/zipalign';
-                def APKSIGNER = '/Users/mpavelka/Library/Android/sdk/build-tools/25.0.3/apksigner';
+                
+                def env = System.getenv();
+                def android_home = env.get('ANDROID_HOME');
+                if (android_home == null) {
+                    println "Please set environment variable ADROID_HOME (export ANDROID_HOME=~/Library/Android/sdk/)."
+                }
+                def ZIPALIGN = new File(android_home, '/build-tools/28.0.3/zipalign').toString();
+                def APKSIGNER = new File(android_home, '/build-tools/28.0.3/apksigner').toString();
 
                 def outputPathNoExt = output.outputFile.path[0..(output.outputFile.path.lastIndexOf('.')-1)]
                 def outputExt = output.outputFile.path[(output.outputFile.path.lastIndexOf('.')+1)..-1]
