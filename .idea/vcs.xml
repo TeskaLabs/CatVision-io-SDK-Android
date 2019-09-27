@@ -2,5 +2,8 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/external/jpeg/jni" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/external/libpng/jni" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/external/libvncserver/jni" vcs="Git" />
   </component>
 </project>
