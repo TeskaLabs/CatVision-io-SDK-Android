@@ -5,6 +5,8 @@
 
     <application>
 
+        <meta-data android:name="seacat.require_user_auth" android:value="false" />
+
         <provider
             android:authorities="${applicationId}.cvioinitprovider"
             android:exported="false"
