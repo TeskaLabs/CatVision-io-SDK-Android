@@ -105,29 +105,6 @@ public class CatVision extends ContextWrapper implements VNCDelegate {
 		return instance;
 	}
 
-	//TODO: Remove after 06/2018
-	@Deprecated
-	static public CatVision getInstance()
-	{
-		Log.w(TAG, "CatVision.getInstance() is deprecated and will be removed, switch to CatVision.getInstance(context).");
-		return instance;
-	}
-
-	///
-
-	//TODO: Remove after 06/2018
-	@Deprecated
-	public static CatVision initialize(Application app) {
-		return initialize(app, false);
-	}
-
-	//TODO: Remove after 06/2018
-	@Deprecated
-	public synchronized static CatVision initialize(Application app, boolean hasCustomId) {
-		Log.w(TAG, "CatVision.initialize() is deprecated and will be removed.");
-		return getInstance(app);
-	}
-
 	///
 
 	static synchronized boolean init(Context context)
