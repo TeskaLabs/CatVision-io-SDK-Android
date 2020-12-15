@@ -75,4 +75,7 @@
     <string name="player2_turn">Player 2\'s turn</string>
     <string name="player1_turn">Player 1\'s turn</string>
 
+    <!-- The class name to the ScrollingChildBehavior required for AppBarLayout -->
+    <string name="appbar_scrolling_view_behavior" translatable="false">android.support.design.widget.AppBarLayout$ScrollingViewBehavior</string>
+
 </resources>
