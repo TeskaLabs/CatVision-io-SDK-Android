@@ -10,24 +10,22 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
-
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.teskalabs.cvio.CatVision;
-import pl.droidsonroids.gif.GifTextView;
-
 import com.teskalabs.seacat.android.client.SeaCatClient;
 
+import pl.droidsonroids.gif.GifTextView;
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements StoppedFragment.OnFragmentInteractionListener, StartedFragment.OnFragmentInteractionListener {
 

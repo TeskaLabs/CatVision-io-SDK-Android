@@ -43,12 +43,12 @@ def getArchiveBaseName = { ->
 }
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 30
     buildToolsVersion '28.0.3'
 
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion 26
+        targetSdkVersion 30
         versionCode getVersionCode()
         versionName getVersionName()
         setProperty("archivesBaseName", getArchiveBaseName())
@@ -157,6 +157,7 @@ task sourcesJar(type: Jar) {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation project(':seacat')
+    implementation 'androidx.annotation:annotation:1.1.0'
 }
